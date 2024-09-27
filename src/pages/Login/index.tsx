@@ -33,9 +33,10 @@ const useStyles = (theme: Theme) => {
 };
 
 const Login: React.FC = () => {
+  const [loading, setLoading] = useState(false);
+
   const theme = useTheme();
   const styles = useStyles(theme);
-  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
   const { snackbar } = useDialogAlert();
@@ -50,9 +51,17 @@ const Login: React.FC = () => {
     password: Yup.string().required("Campo obrigatório"),
   });
 
-  const signIn = () => {
+  const signIn = async (value: { email: string; password: string }) => {
+    const data = { login: value.email, senha: value.password };
     try {
       setLoading(true);
+      await fetch("http://192.168.24.41:5000/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
       snackbar({
         message: "Login efetuado com sucesso!",
         variant: "success",

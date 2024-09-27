@@ -48,7 +48,7 @@ const FormQRCode: React.FC<FormikProps<IFormValues>> = ({
           disabled={!Object.values(props.values).every(Boolean)}
           sx={{ backgroundColor: "#58595B" }}
         >
-          Gerar QRCode
+          Registrar
         </Button>
       </Stack>
     </Form>

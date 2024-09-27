@@ -1,6 +1,10 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+//@ts-nocheck
+import { useState } from "react";
 import {
   Box,
   Button,
+  Checkbox,
   CircularProgress,
   Divider,
   Stack,
@@ -22,6 +26,8 @@ const FormLogin: React.FC<FormLoginProps> = ({
   isSubmitting,
   ...props
 }: FormLoginProps) => {
+  const [showPass, setShowPass] = useState(false);
+
   return (
     <Form onSubmit={props.handleSubmit}>
       <Stack style={{ gap: "2rem" }}>
@@ -47,11 +53,23 @@ const FormLogin: React.FC<FormLoginProps> = ({
             fullWidth
             size="small"
             name="password"
-            type="password"
+            type={showPass ? "text" : "password"}
             label="Senha"
             onChange={props.handleChange}
             onBlur={props.handleBlur}
           />
+
+          <Stack direction="row" alignItems="center">
+            <Checkbox
+              size="small"
+              color="#58595B"
+              checked={showPass}
+              onChange={() => setShowPass(!showPass)}
+            />
+            <Typography sx={{ fontSize: 12, color: "#58595B" }}>
+              Mostrar senha
+            </Typography>
+          </Stack>
           {props.errors.password && props.touched.password && (
             <Typography color="error" fontSize={12} paddingLeft=".5rem">
               {props.errors.password}
