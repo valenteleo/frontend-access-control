@@ -1,5 +1,8 @@
 export const ROUTES = {
   LOGIN: "/login",
-  VISIT: "/cadastrar-visitante",
-  REGISTER: "/cadastrar-usuario",
+  GENERATE: "/gerar-qr-code",
+  REGISTER: () => ({
+    USER: "/cadastrar-usuario",
+    VISIT: "/cadastrar-visita",
+  }),
 };

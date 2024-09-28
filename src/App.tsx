@@ -4,7 +4,7 @@ import { SnackbarProvider } from "notistack";
 
 const App: React.FC = () => {
   return (
-    <SnackbarProvider autoHideDuration={3000}>
+    <SnackbarProvider autoHideDuration={3000} preventDuplicate={true}>
       <IoCProvider>
         <RoutesApp />
       </IoCProvider>

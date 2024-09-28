@@ -1,4 +1,4 @@
-import { Stack, TextField, Button } from "@mui/material";
+import { Stack, TextField, Button, Typography, Divider } from "@mui/material";
 import { Form, FormikProps } from "formik";
 
 interface IFormValues {
@@ -15,6 +15,7 @@ const FormQRCode: React.FC<FormikProps<IFormValues>> = ({
         <Stack direction="column">
           <TextField
             name="name"
+            size="small"
             label="Nome"
             type="text"
             placeholder="Insira"
@@ -23,13 +24,16 @@ const FormQRCode: React.FC<FormikProps<IFormValues>> = ({
             value={props.values.name}
           />
           {props.errors.name && (
-            <span style={{ color: "#CC3D3D" }}>{props.errors.name}</span>
+            <Typography color="error" fontSize={12} paddingLeft=".5rem">
+              {props.errors.name}
+            </Typography>
           )}
         </Stack>
 
         <Stack direction="column">
           <TextField
             name="employee"
+            size="small"
             label="Matrícula"
             type="text"
             placeholder="Insira"
@@ -38,18 +42,24 @@ const FormQRCode: React.FC<FormikProps<IFormValues>> = ({
             value={props.values.employee}
           />
           {props.errors.employee && (
-            <span style={{ color: "#CC3D3D" }}>{props.errors.employee}</span>
+            <Typography color="error" fontSize={12} paddingLeft=".5rem">
+              {props.errors.employee}
+            </Typography>
           )}
         </Stack>
 
-        <Button
-          type="submit"
-          variant="contained"
-          disabled={!Object.values(props.values).every(Boolean)}
-          sx={{ backgroundColor: "#58595B" }}
-        >
-          Registrar
-        </Button>
+        <Divider />
+
+        <Stack direction="row" justifyContent="flex-end">
+          <Button
+            type="submit"
+            variant="contained"
+            disabled={!Object.values(props.values).every(Boolean)}
+            sx={{ textTransform: "capitalize", backgroundColor: "#58595B" }}
+          >
+            Gerar
+          </Button>
+        </Stack>
       </Stack>
     </Form>
   );

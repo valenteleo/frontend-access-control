@@ -1,20 +1,11 @@
 import { Fragment, useState } from "react";
-import {
-  Box,
-  ButtonBase,
-  Stack,
-  Theme,
-  Typography,
-  useTheme,
-} from "@mui/material";
+import { Box, Stack, Theme, Typography, useTheme } from "@mui/material";
 import backgroundPNG from "../../../public/images/background.jpg";
 import FormLogin from "./FormLogin";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import useDialogAlert from "../../hooks/useDialogAlert";
 import { AppError } from "../../utils/AppError";
-import { useNavigate } from "react-router-dom";
-import { ROUTES } from "../../appConfig/routes";
 import CardLogin from "../../components/CardLogin";
 
 const useStyles = (theme: Theme) => {
@@ -38,7 +29,6 @@ const Login: React.FC = () => {
   const theme = useTheme();
   const styles = useStyles(theme);
 
-  const navigate = useNavigate();
   const { snackbar } = useDialogAlert();
 
   const initialValues = {
@@ -96,18 +86,6 @@ const Login: React.FC = () => {
           }
           content={
             <Fragment>
-              <ButtonBase onClick={() => navigate(ROUTES.REGISTER)}>
-                <Typography
-                  sx={{
-                    fontSize: 12,
-                    color: theme.palette.info.dark,
-                    textDecoration: "underline",
-                  }}
-                >
-                  Ainda não possui cadastro? Clique aqui
-                </Typography>
-              </ButtonBase>
-
               <Typography
                 sx={{
                   fontSize: 12,

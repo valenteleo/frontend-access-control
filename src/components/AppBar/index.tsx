@@ -14,6 +14,7 @@ const useStyles = (theme: Theme) => {
   return {
     appBar: {
       display: "flex",
+      flexWrap: "wrap",
       padding: "1.5rem",
       backgroundColor: theme.palette.background.paper,
       position: "fixed",

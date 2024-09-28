@@ -10,9 +10,10 @@ import { AppError } from "../../utils/AppError";
 import { FormQRCode } from "./FormQRCode";
 import useDialogAlert from "../../hooks/useDialogAlert";
 import Layout from "../../components/Layout";
-import { ListAltOutlined } from "@mui/icons-material";
-import QRCode from "react-qr-code";
+import { ListAltOutlined, QrCodeOutlined } from "@mui/icons-material";
 import TitleAndSubtitle from "../../components/TitleAndSubtitle";
+import TitleBarPage from "../../components/TitleBarPage";
+import ModalQRCode from "./ModalQRCode";
 
 const useStyles = (theme: Theme) => {
   return {
@@ -30,7 +31,7 @@ const useStyles = (theme: Theme) => {
   };
 };
 
-const Home: React.FC = () => {
+const GenerateQRCode: React.FC = () => {
   const [hasQRCode, setHasQRCode] = useState(false);
   const [qrCodeValue, setQRCodeValue] = useState("");
 
@@ -73,6 +74,17 @@ const Home: React.FC = () => {
 
   return (
     <Layout>
+      {hasQRCode && (
+        <ModalQRCode
+          open={hasQRCode}
+          value={qrCodeValue}
+          onClose={() => setHasQRCode(false)}
+        />
+      )}
+      <TitleBarPage
+        title="Gerar QR Code"
+        icon={<QrCodeOutlined htmlColor={theme.palette.grey[600]} />}
+      />
       <Stack gap={2}>
         <Card sx={styles.card}>
           <Stack sx={styles.contentCard}>
@@ -92,13 +104,9 @@ const Home: React.FC = () => {
             {(props) => <FormQRCode {...props} />}
           </Formik>
         </Card>
-
-        {hasQRCode && (
-          <QRCode style={{ alignSelf: "center" }} value={qrCodeValue} />
-        )}
       </Stack>
     </Layout>
   );
 };
 
-export default Home;
+export default GenerateQRCode;

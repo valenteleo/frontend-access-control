@@ -3,9 +3,10 @@
 import {
   Box,
   Button,
-  Checkbox,
   CircularProgress,
   Divider,
+  MenuItem,
+  Select,
   Stack,
   TextField,
   Typography,
@@ -17,6 +18,7 @@ interface IFormValues {
   name: string;
   email: string;
   password: string;
+  profile: string;
 }
 
 interface FormRegisterProps extends FormikProps<IFormValues> {
@@ -27,7 +29,7 @@ const FormRegister: React.FC<FormRegisterProps> = ({
   isSubmitting,
   ...props
 }: FormRegisterProps) => {
-  const [showPass, setShowPass] = useState(false);
+  const [profile, setProfile] = useState("");
 
   const fields = [
     { name: "name", label: "Nome" },
@@ -35,8 +37,13 @@ const FormRegister: React.FC<FormRegisterProps> = ({
     { name: "password", label: "Senha" },
   ];
 
+  const profileTypes = [
+    { value: 0, label: "Administrador" },
+    { value: 1, label: "Usuário" },
+  ];
+
   const whichType = (type: string): string => {
-    return type === "password" ? (showPass ? "text" : "password") : "text";
+    return type === "email" ? "email" : "text";
   };
 
   return (
@@ -54,19 +61,6 @@ const FormRegister: React.FC<FormRegisterProps> = ({
               onBlur={props.handleBlur}
             />
 
-            {items.name === "password" && (
-              <Stack direction="row" alignItems="center">
-                <Checkbox
-                  size="small"
-                  color="#58595B"
-                  checked={showPass}
-                  onChange={() => setShowPass(!showPass)}
-                />
-                <Typography sx={{ fontSize: 12, color: "#58595B" }}>
-                  Mostrar senha
-                </Typography>
-              </Stack>
-            )}
             {props.errors[items.name] && props.touched[items.name] && (
               <Typography color="error" fontSize={12} paddingLeft=".5rem">
                 {props.errors[items.name]}
@@ -75,18 +69,45 @@ const FormRegister: React.FC<FormRegisterProps> = ({
           </Box>
         ))}
 
+        <Box flex={1}>
+          <Select
+            fullWidth
+            label="Perfil"
+            size="small"
+            value={profile}
+            onChange={({ target }) => {
+              setProfile(target.value);
+              props.setFieldValue("profile", target.value);
+            }}
+          >
+            {profileTypes.map((item, index) => (
+              <MenuItem key={index} value={item.value}>
+                {item.label}
+              </MenuItem>
+            ))}
+          </Select>
+
+          {props.errors.profile && props.touched.profile && (
+            <Typography color="error" fontSize={12} paddingLeft=".5rem">
+              {props.errors.profile}
+            </Typography>
+          )}
+        </Box>
+
         <Divider />
 
-        <Button
-          type="submit"
-          variant="contained"
-          sx={{ backgroundColor: "#58595B", textTransform: "capitalize" }}
-          startIcon={
-            isSubmitting && <CircularProgress color="inherit" size={18} />
-          }
-        >
-          Cadastrar
-        </Button>
+        <Stack direction="row" justifyContent="flex-end" gap={1}>
+          <Button
+            type="submit"
+            variant="contained"
+            sx={{ backgroundColor: "#58595B", textTransform: "capitalize" }}
+            startIcon={
+              isSubmitting && <CircularProgress color="inherit" size={18} />
+            }
+          >
+            Cadastrar
+          </Button>
+        </Stack>
       </Stack>
     </Form>
   );

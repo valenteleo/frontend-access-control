@@ -1,8 +1,20 @@
 import { useState } from "react";
-import { Stack, MenuList, MenuItem, Drawer, IconButton } from "@mui/material";
+import {
+  Stack,
+  MenuList,
+  MenuItem,
+  Drawer,
+  IconButton,
+  Box,
+} from "@mui/material";
 import { ROUTES } from "../../appConfig/routes";
 import { useNavigate } from "react-router-dom";
-import { Menu } from "@mui/icons-material";
+import {
+  CalendarMonthOutlined,
+  HowToRegOutlined,
+  Menu,
+  QrCodeOutlined,
+} from "@mui/icons-material";
 
 const useStyles = () => {
   return {
@@ -17,15 +29,34 @@ const useStyles = () => {
   };
 };
 
+interface IMenuList {
+  title: string;
+  redirectTo: string;
+  startIcon: React.ReactNode;
+}
+
 const Sidebar: React.FC = () => {
   const [openDrawer, setOpenDrawer] = useState(false);
 
   const styles = useStyles();
   const navigate = useNavigate();
 
-  const menuList = [
-    { label: "Cadastrar visitante", redirect: ROUTES.LOGIN },
-    { label: "Cadastrar usuário", redirect: ROUTES.REGISTER },
+  const menuList: IMenuList[] = [
+    {
+      title: "Cadastrar usuário",
+      redirectTo: ROUTES.REGISTER().USER,
+      startIcon: <HowToRegOutlined />,
+    },
+    {
+      title: "Gerar QR Code",
+      redirectTo: ROUTES.GENERATE,
+      startIcon: <QrCodeOutlined />,
+    },
+    {
+      title: "Cadastrar visita",
+      redirectTo: ROUTES.REGISTER().VISIT,
+      startIcon: <CalendarMonthOutlined />,
+    },
   ];
 
   return (
@@ -40,9 +71,10 @@ const Sidebar: React.FC = () => {
             <MenuItem
               key={index}
               sx={{ width: "100%" }}
-              onClick={() => navigate(items.redirect)}
+              onClick={() => navigate(items.redirectTo)}
             >
-              {items.label}
+              <Box sx={{ marginRight: 1 }}>{items.startIcon}</Box>
+              {items.title}
             </MenuItem>
           ))}
         </MenuList>

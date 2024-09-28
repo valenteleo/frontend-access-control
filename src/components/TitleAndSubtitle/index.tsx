@@ -1,7 +1,7 @@
-import { Box, Typography, useTheme } from "@mui/material";
+import { Box, BoxProps, Typography, useTheme } from "@mui/material";
 import React from "react";
 
-interface TitleAndSubtitleProps {
+interface TitleAndSubtitleProps extends BoxProps {
   title: string;
   subtitle?: string;
 }
@@ -9,6 +9,7 @@ interface TitleAndSubtitleProps {
 const TitleAndSubtitle: React.FC<TitleAndSubtitleProps> = ({
   title,
   subtitle,
+  ...props
 }: TitleAndSubtitleProps) => {
   const theme = useTheme();
 
@@ -18,7 +19,7 @@ const TitleAndSubtitle: React.FC<TitleAndSubtitleProps> = ({
   ];
 
   return (
-    <Box>
+    <Box {...props}>
       {descriptions.map((item, index) => (
         <Typography key={index} sx={item.sx}>
           {item.label}

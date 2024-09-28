@@ -8,7 +8,9 @@ const Error: React.FC = () => {
   return (
     <Box>
       <Typography>Página não encontrada</Typography>
-      <Button onClick={() => navigate(ROUTES.VISIT)}>Voltar para o APP</Button>
+      <Button onClick={() => navigate(ROUTES.REGISTER().USER)}>
+        Voltar para o APP
+      </Button>
     </Box>
   );
 };

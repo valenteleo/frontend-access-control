@@ -1,9 +1,10 @@
 import { HashRouter, Navigate, Route, Routes } from "react-router-dom";
 import { ROUTES } from "../../appConfig/routes";
-import Home from "../../pages/Home";
 import Login from "../../pages/Login";
 import Register from "../../pages/Register";
+import GenerateQRCode from "../../pages/GenerateQRCode";
 import Error from "../../pages/Error";
+import LogVisit from "../../pages/LogVisit";
 
 const RoutesApp: React.FC = () => {
   return (
@@ -14,8 +15,10 @@ const RoutesApp: React.FC = () => {
         <Route path={ROUTES.LOGIN} element={<Login />} />
 
         {/*Rotas protegidas*/}
-        <Route path={ROUTES.VISIT} element={<Home />} />
-        <Route path={ROUTES.REGISTER} element={<Register />} />
+        <Route path={ROUTES.GENERATE} element={<GenerateQRCode />} />
+        <Route path={ROUTES.REGISTER().USER} element={<Register />} />
+        <Route path={ROUTES.REGISTER().VISIT} element={<LogVisit />} />
+
         <Route path="*" element={<Error />} />
       </Routes>
     </HashRouter>
