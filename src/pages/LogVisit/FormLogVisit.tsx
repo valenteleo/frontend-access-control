@@ -71,7 +71,7 @@ const FormLogVisit: React.FC<FormLogVisitProps> = ({
           <DatePicker
             format={"DD/MM/YYYY"}
             placeholder="Selecione"
-            style={{ width: "100%" }}
+            style={{ width: "100%", borderColor: theme.palette.grey[400] }}
             size="large"
             disabledDate={disabledDate}
             onChange={(date: dayjs.Dayjs) =>
