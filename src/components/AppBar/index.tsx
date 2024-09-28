@@ -21,7 +21,7 @@ const useStyles = (theme: Theme) => {
       justifyContent: "space-between",
       alignItems: "center",
       width: "100%",
-      zIndex: 1,
+      zIndex: 99,
     },
   };
 };
