@@ -70,6 +70,7 @@ const FormLogVisit: React.FC<FormLogVisitProps> = ({
         <Box width="100%">
           <DatePicker
             format={"DD/MM/YYYY"}
+            placeholder="Selecione"
             style={{ width: "100%" }}
             size="large"
             disabledDate={disabledDate}
