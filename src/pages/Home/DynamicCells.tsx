@@ -28,12 +28,8 @@ const DynamicCells: React.FC<{ items: IMock }> = ({ items }) => {
         <TableCell key={index}>
           <Typography
             sx={{
-              backgroundColor:
-                index === 3 ? tagStylesStatus(item) : "transparent",
               color:
-                index === 3
-                  ? theme.palette.common.white
-                  : theme.palette.grey[700],
+                index === 3 ? tagStylesStatus(item) : theme.palette.grey[700],
               textAlign: index === 3 ? "center" : "left",
               padding: 1,
               borderRadius: "8px",

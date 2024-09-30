@@ -1,7 +1,7 @@
 export const homeHeaderColumns: string[] = [
-  "Nome",
+  "Nome do visitante",
   "CPF",
   "Data da visita",
-  "Status",
+  "Status do agendamento",
   "",
 ];

@@ -84,7 +84,12 @@ const Home: React.FC = () => {
         </IconButton>
 
         <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
-          <MenuItem onClick={handleAlert}>Editar agendamento</MenuItem>
+          <MenuItem
+            sx={{ fontFamily: "Poppins", fontSize: 13 }}
+            onClick={handleAlert}
+          >
+            Editar agendamento
+          </MenuItem>
         </Menu>
       </Box>
     );

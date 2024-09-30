@@ -6,6 +6,7 @@ import {
   Drawer,
   IconButton,
   Box,
+  useTheme,
 } from "@mui/material";
 import { ROUTES } from "../../appConfig/routes";
 import { useNavigate } from "react-router-dom";
@@ -38,25 +39,30 @@ interface IMenuList {
 const Sidebar: React.FC = () => {
   const [openDrawer, setOpenDrawer] = useState(false);
 
+  const theme = useTheme();
   const styles = useStyles();
   const navigate = useNavigate();
 
   const menuList: IMenuList[] = [
-    { title: "Início", redirectTo: ROUTES.HOME, startIcon: <HomeOutlined /> },
+    {
+      title: "Início",
+      redirectTo: ROUTES.HOME,
+      startIcon: <HomeOutlined htmlColor={theme.palette.grey[600]} />,
+    },
     {
       title: "Cadastrar usuário",
       redirectTo: ROUTES.REGISTER().USER,
-      startIcon: <HowToRegOutlined />,
+      startIcon: <HowToRegOutlined htmlColor={theme.palette.grey[600]} />,
     },
     {
       title: "Gerar QR Code",
       redirectTo: ROUTES.GENERATE,
-      startIcon: <QrCodeOutlined />,
+      startIcon: <QrCodeOutlined htmlColor={theme.palette.grey[600]} />,
     },
     {
       title: "Cadastrar visita",
       redirectTo: ROUTES.REGISTER().VISIT,
-      startIcon: <CalendarMonthOutlined />,
+      startIcon: <CalendarMonthOutlined htmlColor={theme.palette.grey[600]} />,
     },
   ];
 
