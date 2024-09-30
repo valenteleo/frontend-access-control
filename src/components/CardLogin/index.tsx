@@ -5,6 +5,7 @@ const useStyles = (theme: Theme) => {
   return {
     title: {
       color: theme.palette.grey[700],
+      fontFamily: "Poppins",
     },
     loginFormField: {
       height: "100vh",

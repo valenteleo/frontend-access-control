@@ -1,18 +1,17 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-//@ts-nocheck
 import {
   Box,
-  Button,
-  CircularProgress,
   Divider,
   MenuItem,
   Select,
   Stack,
   TextField,
   Typography,
+  styled,
 } from "@mui/material";
 import { Form, FormikProps } from "formik";
 import { useState } from "react";
+import CustomButton from "../../components/CustomButton";
+import { CustomButtonVariant } from "../../components/CustomButton/CustomButtonVariant";
 
 interface IFormValues {
   name: string;
@@ -42,6 +41,13 @@ const FormRegister: React.FC<FormRegisterProps> = ({
     { value: 1, label: "Usuário" },
   ];
 
+  const HelperText = styled(Typography)(({ theme }) => ({
+    fontFamily: "Poppins",
+    fontSize: 12,
+    color: theme.palette.error.dark,
+    paddingLeft: ".5rem",
+  }));
+
   const whichType = (type: string): string => {
     return type === "email" ? "email" : "text";
   };
@@ -60,12 +66,12 @@ const FormRegister: React.FC<FormRegisterProps> = ({
               onChange={props.handleChange}
               onBlur={props.handleBlur}
             />
-
-            {props.errors[items.name] && props.touched[items.name] && (
-              <Typography color="error" fontSize={12} paddingLeft=".5rem">
-                {props.errors[items.name]}
-              </Typography>
-            )}
+            {props.errors[items.name as keyof IFormValues] &&
+              props.touched[items.name as keyof IFormValues] && (
+                <HelperText>
+                  {props.errors[items.name as keyof IFormValues]}
+                </HelperText>
+              )}
           </Box>
         ))}
 
@@ -88,25 +94,22 @@ const FormRegister: React.FC<FormRegisterProps> = ({
           </Select>
 
           {props.errors.profile && props.touched.profile && (
-            <Typography color="error" fontSize={12} paddingLeft=".5rem">
-              {props.errors.profile}
-            </Typography>
+            <HelperText>{props.errors.profile}</HelperText>
           )}
         </Box>
 
         <Divider />
 
         <Stack direction="row" justifyContent="flex-end" gap={1}>
-          <Button
+          <CustomButton
             type="submit"
-            variant="contained"
-            sx={{ backgroundColor: "#58595B", textTransform: "capitalize" }}
-            startIcon={
-              isSubmitting && <CircularProgress color="inherit" size={18} />
+            title="Cadastrar"
+            variant={
+              isSubmitting
+                ? CustomButtonVariant.CONTAINED_LOADING
+                : CustomButtonVariant.CONTAINED
             }
-          >
-            Cadastrar
-          </Button>
+          />
         </Stack>
       </Stack>
     </Form>

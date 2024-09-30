@@ -14,14 +14,21 @@ const TitleAndSubtitle: React.FC<TitleAndSubtitleProps> = ({
   const theme = useTheme();
 
   const descriptions = [
-    { label: title, sx: { fontSize: 14, color: theme.palette.grey[600] } },
-    { label: subtitle, sx: { fontSize: 12, color: theme.palette.grey[600] } },
+    { label: title, sx: { fontSize: 14 } },
+    { label: subtitle, sx: { fontSize: 12 } },
   ];
 
   return (
     <Box {...props}>
       {descriptions.map((item, index) => (
-        <Typography key={index} sx={item.sx}>
+        <Typography
+          key={index}
+          sx={{
+            fontFamily: "Poppins",
+            color: theme.palette.grey[600],
+            ...item.sx,
+          }}
+        >
           {item.label}
         </Typography>
       ))}

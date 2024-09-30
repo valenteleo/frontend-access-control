@@ -1,13 +1,5 @@
-import { CodeOffOutlined, CodeOutlined, Logout } from "@mui/icons-material";
-import {
-  Avatar,
-  Typography,
-  IconButton,
-  Stack,
-  Box,
-  Theme,
-  useTheme,
-} from "@mui/material";
+import { Logout } from "@mui/icons-material";
+import { Avatar, IconButton, Stack, Box, Theme, useTheme } from "@mui/material";
 import Sidebar from "../Sidebar";
 
 const useStyles = (theme: Theme) => {
@@ -33,14 +25,6 @@ const AppBar: React.FC = () => {
   return (
     <Box sx={styles.appBar}>
       <Sidebar />
-
-      <Stack direction="row" gap={0.3}>
-        <CodeOutlined htmlColor={theme.palette.grey[600]} />
-        <Typography color={theme.palette.grey[600]}>
-          Bem-vindo, Leonardo!
-        </Typography>
-        <CodeOffOutlined htmlColor={theme.palette.grey[600]} />
-      </Stack>
 
       <Stack direction="row" gap={2}>
         <IconButton>

@@ -1,7 +1,7 @@
 import { Box, Theme, useTheme } from "@mui/material";
 import AppBar from "../AppBar";
 
-const useStyles = () => {
+const useStyles = (theme: Theme) => {
   return {
     content: {
       display: "flex",
@@ -10,12 +10,17 @@ const useStyles = () => {
       padding: "7rem 2rem 2rem 2rem",
       gap: 2,
     },
+    accessDate: {
+      fontSize: 12,
+      color: theme.palette.grey[500],
+      fontFamily: "Poppins",
+    },
   };
 };
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const theme: Theme = useTheme();
-  const styles = useStyles();
+  const styles = useStyles(theme);
 
   return (
     <Box sx={{ backgroundColor: theme.palette.grey[200] }}>

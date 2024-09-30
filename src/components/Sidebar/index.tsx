@@ -11,6 +11,7 @@ import { ROUTES } from "../../appConfig/routes";
 import { useNavigate } from "react-router-dom";
 import {
   CalendarMonthOutlined,
+  HomeOutlined,
   HowToRegOutlined,
   Menu,
   QrCodeOutlined,
@@ -22,7 +23,6 @@ const useStyles = () => {
       display: "flex",
       flexDirection: "column",
       alignItems: "start",
-      marginTop: "5rem",
       gap: 2,
       paddingX: "1rem",
     },
@@ -42,6 +42,7 @@ const Sidebar: React.FC = () => {
   const navigate = useNavigate();
 
   const menuList: IMenuList[] = [
+    { title: "Início", redirectTo: ROUTES.HOME, startIcon: <HomeOutlined /> },
     {
       title: "Cadastrar usuário",
       redirectTo: ROUTES.REGISTER().USER,
@@ -70,7 +71,7 @@ const Sidebar: React.FC = () => {
           {menuList.map((items, index) => (
             <MenuItem
               key={index}
-              sx={{ width: "100%" }}
+              sx={{ width: "100%", fontFamily: "Poppins" }}
               onClick={() => navigate(items.redirectTo)}
             >
               <Box sx={{ marginRight: 1 }}>{items.startIcon}</Box>

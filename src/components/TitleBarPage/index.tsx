@@ -20,6 +20,7 @@ const useStyles = (theme: Theme) => {
       color: theme.palette.grey[600],
       fontWeight: 600,
       fontSize: "1.2rem",
+      fontFamily: "Poppins",
     },
   };
 };

@@ -1,5 +1,7 @@
-import { Stack, TextField, Button, Typography, Divider } from "@mui/material";
+import { Stack, TextField, Typography, Divider, styled } from "@mui/material";
 import { Form, FormikProps } from "formik";
+import CustomButton from "../../components/CustomButton";
+import { CustomButtonVariant } from "../../components/CustomButton/CustomButtonVariant";
 
 interface IFormValues {
   name: string;
@@ -9,6 +11,17 @@ interface IFormValues {
 const FormQRCode: React.FC<FormikProps<IFormValues>> = ({
   ...props
 }: FormikProps<IFormValues>) => {
+  const HelperText = styled(Typography)(({ theme }) => ({
+    fontFamily: "Poppins",
+    fontSize: 12,
+    color: theme.palette.error.dark,
+    paddingLeft: ".5rem",
+  }));
+
+  const disabled = (): boolean => {
+    return !Object.values(props.values).every(Boolean);
+  };
+
   return (
     <Form onSubmit={props.handleSubmit}>
       <Stack direction="column" gap="2rem">
@@ -23,11 +36,7 @@ const FormQRCode: React.FC<FormikProps<IFormValues>> = ({
             onBlur={props.handleBlur}
             value={props.values.name}
           />
-          {props.errors.name && (
-            <Typography color="error" fontSize={12} paddingLeft=".5rem">
-              {props.errors.name}
-            </Typography>
-          )}
+          {props.errors.name && <HelperText>{props.errors.name}</HelperText>}
         </Stack>
 
         <Stack direction="column">
@@ -42,23 +51,22 @@ const FormQRCode: React.FC<FormikProps<IFormValues>> = ({
             value={props.values.employee}
           />
           {props.errors.employee && (
-            <Typography color="error" fontSize={12} paddingLeft=".5rem">
-              {props.errors.employee}
-            </Typography>
+            <HelperText>{props.errors.employee}</HelperText>
           )}
         </Stack>
 
         <Divider />
 
         <Stack direction="row" justifyContent="flex-end">
-          <Button
+          <CustomButton
+            title="Gerar"
             type="submit"
-            variant="contained"
-            disabled={!Object.values(props.values).every(Boolean)}
-            sx={{ textTransform: "capitalize", backgroundColor: "#58595B" }}
-          >
-            Gerar
-          </Button>
+            variant={
+              disabled()
+                ? CustomButtonVariant.DISABLED
+                : CustomButtonVariant.CONTAINED
+            }
+          />
         </Stack>
       </Stack>
     </Form>
