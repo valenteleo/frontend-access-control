@@ -23,7 +23,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const styles = useStyles(theme);
 
   return (
-    <Box sx={{ backgroundColor: theme.palette.grey[200] }}>
+    <Box>
       <AppBar />
 
       <Box sx={styles.content}>{children}</Box>
