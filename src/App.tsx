@@ -1,14 +1,21 @@
-import RoutesApp from "./components/routes";
+import RoutesApp from "./components/Routes";
+import { AuthProvider } from "./contexts/AuthContext";
 import { IoCProvider } from "./contexts/IoCContext";
 import { SnackbarProvider } from "notistack";
 
 const App: React.FC = () => {
   return (
-    <SnackbarProvider autoHideDuration={3000} preventDuplicate={true}>
-      <IoCProvider>
-        <RoutesApp />
-      </IoCProvider>
-    </SnackbarProvider>
+    <IoCProvider>
+      <AuthProvider>
+        <SnackbarProvider
+          style={{ fontFamily: "Poppins" }}
+          autoHideDuration={3000}
+          preventDuplicate={true}
+        >
+          <RoutesApp />
+        </SnackbarProvider>
+      </AuthProvider>
+    </IoCProvider>
   );
 };
 

@@ -6,20 +6,44 @@ import GenerateQRCode from "../../pages/GenerateQRCode";
 import Error from "../../pages/Error";
 import LogVisit from "../../pages/LogVisit";
 import Home from "../../pages/Home";
+import RouteGuard from "./RouteGuard";
 
 const RoutesApp: React.FC = () => {
   return (
     <HashRouter>
       <Routes>
-        {/*Redirecionar diretamente para a tela de login*/}
+        {/*Redirecionar diretamente para a tela de login e rotas públicas*/}
         <Route path="/" element={<Navigate to={ROUTES.LOGIN} />} />
         <Route path={ROUTES.LOGIN} element={<Login />} />
 
-        {/*Rotas protegidas*/}
-        <Route path={ROUTES.HOME} element={<Home />} />
         <Route path={ROUTES.GENERATE} element={<GenerateQRCode />} />
-        <Route path={ROUTES.REGISTER().USER} element={<Register />} />
-        <Route path={ROUTES.REGISTER().VISIT} element={<LogVisit />} />
+
+        {/*Rotas protegidas*/}
+        <Route
+          path={ROUTES.HOME}
+          element={
+            <RouteGuard>
+              <Home />
+            </RouteGuard>
+          }
+        />
+
+        <Route
+          path={ROUTES.REGISTER().USER}
+          element={
+            <RouteGuard>
+              <Register />
+            </RouteGuard>
+          }
+        />
+        <Route
+          path={ROUTES.REGISTER().VISIT}
+          element={
+            <RouteGuard>
+              <LogVisit />
+            </RouteGuard>
+          }
+        />
 
         <Route path="*" element={<Error />} />
       </Routes>

@@ -3,10 +3,12 @@ import {
   ButtonBase,
   ButtonBaseProps,
   CircularProgress,
+  SvgIcon,
   Typography,
   useTheme,
 } from "@mui/material";
 import { CustomButtonTypes, CustomButtonVariant } from "./CustomButtonVariant";
+import { FileDownloadOutlined } from "@mui/icons-material";
 
 interface CustomButtonProps extends ButtonBaseProps {
   title: string;
@@ -28,7 +30,7 @@ const CustomButton = forwardRef<ButtonBase, CustomButtonProps>(
 
     const isContained = variant.startsWith(CustomButtonVariant.CONTAINED);
 
-    const isContainedDisabled = variant.includes("loading");
+    const isContainedDisabled = variant.endsWith("loading");
 
     const isDisabled = variant === CustomButtonVariant.DISABLED;
 
@@ -53,6 +55,12 @@ const CustomButton = forwardRef<ButtonBase, CustomButtonProps>(
               }}
             />
           );
+        case CustomButtonVariant.CONTAINED_DOWNLOAD:
+          return <SvgIcon component={FileDownloadOutlined} />;
+        case CustomButtonVariant.OUTLINED_DOWNLOAD:
+          return <SvgIcon component={FileDownloadOutlined} />;
+        case CustomButtonVariant.OUTLINED:
+          return null;
         default:
           return null;
       }
@@ -62,6 +70,7 @@ const CustomButton = forwardRef<ButtonBase, CustomButtonProps>(
       <ButtonBase
         disabled={isDisabled || isContainedDisabled}
         sx={{
+          ...props.sx,
           display: "flex",
           gap: 1,
           minWidth: "6rem",
@@ -77,7 +86,6 @@ const CustomButton = forwardRef<ButtonBase, CustomButtonProps>(
               : `1px solid ${theme.palette.grey[700]}`,
           borderRadius: "4px",
           padding: ".5rem 1rem",
-          ...props.sx,
         }}
         {...props}
         ref={ref}

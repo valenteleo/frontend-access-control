@@ -7,6 +7,9 @@ import * as Yup from "yup";
 import useDialogAlert from "../../hooks/useDialogAlert";
 import { AppError } from "../../utils/AppError";
 import CardLogin from "../../components/CardLogin";
+import { useAuth } from "../../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
+import { ROUTES } from "../../appConfig/routes";
 
 const useStyles = (theme: Theme) => {
   return {
@@ -26,6 +29,9 @@ const useStyles = (theme: Theme) => {
 const Login: React.FC = () => {
   const [loading, setLoading] = useState(false);
 
+  const { setIsAuthenticated } = useAuth();
+
+  const navigate = useNavigate();
   const theme = useTheme();
   const styles = useStyles(theme);
 
@@ -43,20 +49,21 @@ const Login: React.FC = () => {
 
   const signIn = async (value: { email: string; password: string }) => {
     const data = { login: value.email, senha: value.password };
+    console.log(data);
+
     try {
       setLoading(true);
-      await fetch("http://192.168.24.41:5000/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
+      setIsAuthenticated(true);
+
       snackbar({
         message: "Login efetuado com sucesso!",
         variant: "success",
         anchorOrigin: { vertical: "top", horizontal: "right" },
       });
+
+      setTimeout(() => {
+        navigate(ROUTES.HOME);
+      }, 2000);
     } catch (error) {
       if (error instanceof AppError) {
         snackbar({

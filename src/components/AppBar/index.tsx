@@ -1,6 +1,9 @@
 import { Logout } from "@mui/icons-material";
 import { Avatar, IconButton, Stack, Box, Theme, useTheme } from "@mui/material";
 import Sidebar from "../Sidebar";
+import { useNavigate } from "react-router-dom";
+import { ROUTES } from "../../appConfig/routes";
+import { useAuth } from "../../contexts/AuthContext";
 
 const useStyles = (theme: Theme) => {
   return {
@@ -19,15 +22,23 @@ const useStyles = (theme: Theme) => {
 };
 
 const AppBar: React.FC = () => {
+  const { setIsAuthenticated } = useAuth();
+
   const theme = useTheme();
   const styles = useStyles(theme);
+  const navigate = useNavigate();
+
+  const logout = () => {
+    setIsAuthenticated(false);
+    navigate(ROUTES.LOGIN);
+  };
 
   return (
     <Box sx={styles.appBar}>
       <Sidebar />
 
       <Stack direction="row" gap={2}>
-        <IconButton>
+        <IconButton onClick={logout}>
           <Logout />
         </IconButton>
 

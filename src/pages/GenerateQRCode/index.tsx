@@ -48,17 +48,16 @@ const GenerateQRCode: React.FC = () => {
 
   const initialValues = {
     name: "",
-    employee: "",
   };
 
   const validationSchema = Yup.object().shape({
     name: Yup.string().required("Campo obrigatório"),
-    employee: Yup.string().required("Campo obrigatório"),
   });
 
-  const generateQRCode = async (name: string, employee: string) => {
+  const generateQRCode = async (name: string) => {
     try {
-      const formatValue = formatQRCodeValue(name, employee);
+      const formatValue = formatQRCodeValue(name);
+      console.log(formatValue);
       const data = { qrcode: formatValue };
 
       await qrcodeService.generateQRCode(data);
@@ -67,7 +66,7 @@ const GenerateQRCode: React.FC = () => {
       setHasQRCode(true);
     } catch (error) {
       if (error instanceof AppError) {
-        snackbar({ message: error.message, variant: "error" });
+        snackbar({ message: `Error: ${error.message}`, variant: "error" });
       }
     }
   };
@@ -99,7 +98,7 @@ const GenerateQRCode: React.FC = () => {
           <Formik
             initialValues={initialValues}
             validationSchema={validationSchema}
-            onSubmit={(values) => generateQRCode(values.name, values.employee)}
+            onSubmit={(values) => generateQRCode(values.name)}
           >
             {(props) => <FormQRCode {...props} />}
           </Formik>

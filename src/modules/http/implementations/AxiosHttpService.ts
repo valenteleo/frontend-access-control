@@ -1,10 +1,10 @@
-/* eslint-disable no-useless-catch */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-empty-object-type */
 import { injectable } from "inversify";
 import { IHttpService } from "../models/IHttpService";
-import Axios, { AxiosInstance } from "axios";
+import Axios, { AxiosInstance, AxiosError } from "axios";
 import appConfig from "../../../appConfig";
+import { AppError } from "../../../utils/AppError";
 
 @injectable()
 export class AxiosHttpService implements IHttpService {
@@ -13,6 +13,7 @@ export class AxiosHttpService implements IHttpService {
   constructor() {
     this.httpInstance = Axios.create({
       baseURL: appConfig.api.url,
+      timeout: appConfig.api.timeout,
     });
   }
 
@@ -30,8 +31,12 @@ export class AxiosHttpService implements IHttpService {
         params: params,
       });
       return data;
-    } catch (error) {
-      throw error;
+    } catch (err: any) {
+      const error: AxiosError<{ message: string }> = err;
+      if (error.message.includes("timeout")) {
+        throw new AppError("Tempo de conexão esgotado");
+      }
+      throw new AppError(error.response?.data.message || error.message);
     }
   }
 

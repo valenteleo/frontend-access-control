@@ -3,6 +3,8 @@ export type CustomButtonTypes =
   | "contained-loading"
   | "outlined"
   | "outlined-loading"
+  | "contained-download"
+  | "outlined-download"
   | "disabled";
 
 export enum CustomButtonVariant {
@@ -11,4 +13,6 @@ export enum CustomButtonVariant {
   OUTLINED = "outlined",
   OUTLINED_LOADING = "outlined-loading",
   DISABLED = "disabled",
+  CONTAINED_DOWNLOAD = "contained-download",
+  OUTLINED_DOWNLOAD = "outlined-download",
 }

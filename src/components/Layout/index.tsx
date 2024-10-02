@@ -1,5 +1,6 @@
 import { Box, Theme, useTheme } from "@mui/material";
 import AppBar from "../AppBar";
+import { useAuth } from "../../contexts/AuthContext";
 
 const useStyles = (theme: Theme) => {
   return {
@@ -19,12 +20,14 @@ const useStyles = (theme: Theme) => {
 };
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { isAuthenticated } = useAuth();
+
   const theme: Theme = useTheme();
   const styles = useStyles(theme);
 
   return (
     <Box>
-      <AppBar />
+      {isAuthenticated && <AppBar />}
 
       <Box sx={styles.content}>{children}</Box>
     </Box>

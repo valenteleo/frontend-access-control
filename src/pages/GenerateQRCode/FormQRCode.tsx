@@ -5,7 +5,6 @@ import { CustomButtonVariant } from "../../components/CustomButton/CustomButtonV
 
 interface IFormValues {
   name: string;
-  employee: string;
 }
 
 const FormQRCode: React.FC<FormikProps<IFormValues>> = ({
@@ -37,22 +36,6 @@ const FormQRCode: React.FC<FormikProps<IFormValues>> = ({
             value={props.values.name}
           />
           {props.errors.name && <HelperText>{props.errors.name}</HelperText>}
-        </Stack>
-
-        <Stack direction="column">
-          <TextField
-            name="employee"
-            size="small"
-            label="Matrícula"
-            type="text"
-            placeholder="Insira"
-            onChange={props.handleChange}
-            onBlur={props.handleBlur}
-            value={props.values.employee}
-          />
-          {props.errors.employee && (
-            <HelperText>{props.errors.employee}</HelperText>
-          )}
         </Stack>
 
         <Divider />
