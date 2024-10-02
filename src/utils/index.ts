@@ -6,3 +6,7 @@ export const formatQRCodeValue = (name: string, employee: string) => {
 
   return `${formatName}.${formatDate}.${employee}`;
 };
+
+export const ArrayIsEmpty = (arr: unknown[]): boolean => {
+  return Array.isArray(arr) && arr.length === 0;
+};

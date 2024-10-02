@@ -1,8 +1,6 @@
 import {
   Box,
   Divider,
-  MenuItem,
-  Select,
   Stack,
   TextField,
   Typography,
@@ -12,6 +10,7 @@ import { Form, FormikProps } from "formik";
 import { useState } from "react";
 import CustomButton from "../../components/CustomButton";
 import { CustomButtonVariant } from "../../components/CustomButton/CustomButtonVariant";
+import SelectCustom from "../../components/SelectCustom";
 
 interface IFormValues {
   name: string;
@@ -76,22 +75,16 @@ const FormRegister: React.FC<FormRegisterProps> = ({
         ))}
 
         <Box flex={1}>
-          <Select
-            fullWidth
+          <SelectCustom
             label="Perfil"
-            size="small"
             value={profile}
             onChange={({ target }) => {
               setProfile(target.value);
               props.setFieldValue("profile", target.value);
             }}
-          >
-            {profileTypes.map((item, index) => (
-              <MenuItem key={index} value={item.value}>
-                {item.label}
-              </MenuItem>
-            ))}
-          </Select>
+            style={{ fontSize: 14 }}
+            options={profileTypes}
+          />
 
           {props.errors.profile && props.touched.profile && (
             <HelperText>{props.errors.profile}</HelperText>
