@@ -4,6 +4,7 @@ import Sidebar from "../Sidebar";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../appConfig/routes";
 import { useAuth } from "../../contexts/AuthContext";
+import { IUserData } from "../../modules/authentication/models";
 
 const useStyles = (theme: Theme) => {
   return {
@@ -22,7 +23,7 @@ const useStyles = (theme: Theme) => {
 };
 
 const AppBar: React.FC = () => {
-  const { setIsAuthenticated } = useAuth();
+  const { setIsAuthenticated, setUserData, userData } = useAuth();
 
   const theme = useTheme();
   const styles = useStyles(theme);
@@ -30,6 +31,7 @@ const AppBar: React.FC = () => {
 
   const logout = () => {
     setIsAuthenticated(false);
+    setUserData({} as IUserData);
     navigate(ROUTES.LOGIN);
   };
 
@@ -42,7 +44,9 @@ const AppBar: React.FC = () => {
           <Logout />
         </IconButton>
 
-        <Avatar sx={{ backgroundColor: theme.palette.error.light }}>L</Avatar>
+        <Avatar sx={{ backgroundColor: theme.palette.error.light }}>
+          {userData?.nome.toLocaleUpperCase().charAt(0)}
+        </Avatar>
       </Stack>
     </Box>
   );

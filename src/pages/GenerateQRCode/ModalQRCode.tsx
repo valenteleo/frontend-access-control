@@ -80,7 +80,7 @@ const ModalQRCode: React.FC<ModalQRCodeProps> = ({
             </IconButton>
           </Stack>
 
-          <div ref={qrRef}>
+          <div style={{ padding: "1rem" }} ref={qrRef}>
             <QRCode style={styles.containerQRCode} value={value} />
           </div>
 

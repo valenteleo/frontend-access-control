@@ -16,8 +16,6 @@ const RoutesApp: React.FC = () => {
         <Route path="/" element={<Navigate to={ROUTES.LOGIN} />} />
         <Route path={ROUTES.LOGIN} element={<Login />} />
 
-        <Route path={ROUTES.GENERATE} element={<GenerateQRCode />} />
-
         {/*Rotas protegidas*/}
         <Route
           path={ROUTES.HOME}
@@ -36,6 +34,16 @@ const RoutesApp: React.FC = () => {
             </RouteGuard>
           }
         />
+
+        <Route
+          path={ROUTES.GENERATE}
+          element={
+            <RouteGuard>
+              <GenerateQRCode />
+            </RouteGuard>
+          }
+        />
+
         <Route
           path={ROUTES.REGISTER().VISIT}
           element={

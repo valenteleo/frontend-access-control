@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Box, Stack, Theme, Typography, useTheme } from "@mui/material";
 import backgroundPNG from "../../../public/images/background.jpg";
 import FormLogin from "./FormLogin";
@@ -7,9 +7,12 @@ import * as Yup from "yup";
 import useDialogAlert from "../../hooks/useDialogAlert";
 import { AppError } from "../../utils/AppError";
 import CardLogin from "../../components/CardLogin";
-import { useAuth } from "../../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../appConfig/routes";
+import { useIoCContext } from "../../contexts/IoCContext";
+import { Types } from "../../ioc/types";
+import { IAuthenticationService } from "../../modules/authentication/models";
+import { useAuth } from "../../contexts/AuthContext";
 
 const useStyles = (theme: Theme) => {
   return {
@@ -29,13 +32,17 @@ const useStyles = (theme: Theme) => {
 const Login: React.FC = () => {
   const [loading, setLoading] = useState(false);
 
-  const { setIsAuthenticated } = useAuth();
+  const { serviceContainer } = useIoCContext();
+  const { userData, setIsAuthenticated, setUserData } = useAuth();
+  const { snackbar } = useDialogAlert();
 
   const navigate = useNavigate();
   const theme = useTheme();
   const styles = useStyles(theme);
 
-  const { snackbar } = useDialogAlert();
+  const autheticationService = serviceContainer.get<IAuthenticationService>(
+    Types.Authentication.IAuthenticationService
+  );
 
   const initialValues = {
     email: "",
@@ -47,35 +54,65 @@ const Login: React.FC = () => {
     password: Yup.string().required("Campo obrigatório"),
   });
 
-  const signIn = async (value: { email: string; password: string }) => {
-    const data = { login: value.email, senha: value.password };
-    console.log(data);
-
+  const signIn = async (email: string, password: string) => {
     try {
       setLoading(true);
-      setIsAuthenticated(true);
+      const response = await autheticationService.signIn(email, password);
 
       snackbar({
         message: "Login efetuado com sucesso!",
         variant: "success",
-        anchorOrigin: { vertical: "top", horizontal: "right" },
+        anchorOrigin: {
+          vertical: "top",
+          horizontal: "right",
+        },
       });
 
       setTimeout(() => {
-        navigate(ROUTES.HOME);
-      }, 2000);
+        setUserData(response);
+
+        if (Object.keys(userData)) {
+          setIsAuthenticated(true);
+          navigate(ROUTES.HOME);
+        }
+      }, 1000);
     } catch (error) {
       if (error instanceof AppError) {
         snackbar({
-          message: error.message,
+          message: `Error: ${error.message}`,
           variant: "error",
-          anchorOrigin: { vertical: "top", horizontal: "right" },
         });
       }
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const response = await autheticationService.getUserData();
+
+        const loginSuccessfull = Object.keys(response).length > 0;
+
+        if (loginSuccessfull) {
+          setIsAuthenticated(true);
+          setUserData(response);
+          navigate(ROUTES.HOME);
+        }
+      } catch (error) {
+        if (error instanceof AppError) {
+          console.log(error.message);
+        }
+      }
+    })();
+  }, [
+    autheticationService,
+    navigate,
+    setIsAuthenticated,
+    setUserData,
+    snackbar,
+  ]);
 
   return (
     <Box sx={styles.background}>
@@ -86,7 +123,7 @@ const Login: React.FC = () => {
             <Formik
               initialValues={initialValues}
               validationSchema={validationLoginSchema}
-              onSubmit={signIn}
+              onSubmit={(value) => signIn(value.email, value.password)}
             >
               {(props) => <FormLogin {...props} isSubmitting={loading} />}
             </Formik>

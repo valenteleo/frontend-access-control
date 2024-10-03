@@ -2,18 +2,13 @@ import { useState } from "react";
 import { Card, Stack, Theme, useTheme } from "@mui/material";
 import { Formik } from "formik";
 import * as Yup from "yup";
-import { formatQRCodeValue } from "../../utils";
-import { useIoCContext } from "../../contexts/IoCContext";
-import { Types } from "../../ioc/types";
-import { IQRCodeService } from "../../modules/qrcode/models/IQRCodeService";
-import { AppError } from "../../utils/AppError";
 import { FormQRCode } from "./FormQRCode";
-import useDialogAlert from "../../hooks/useDialogAlert";
 import Layout from "../../components/Layout";
 import { ListAltOutlined, QrCodeOutlined } from "@mui/icons-material";
 import TitleAndSubtitle from "../../components/TitleAndSubtitle";
 import TitleBarPage from "../../components/TitleBarPage";
 import ModalQRCode from "./ModalQRCode";
+import { formatQRCodeValue } from "../../utils";
 
 const useStyles = (theme: Theme) => {
   return {
@@ -38,14 +33,6 @@ const GenerateQRCode: React.FC = () => {
   const theme = useTheme();
   const styles = useStyles(theme);
 
-  const { snackbar } = useDialogAlert();
-
-  const { serviceContainer } = useIoCContext();
-
-  const qrcodeService = serviceContainer.get<IQRCodeService>(
-    Types.QRCode.IQRCodeService
-  );
-
   const initialValues = {
     name: "",
   };
@@ -54,21 +41,11 @@ const GenerateQRCode: React.FC = () => {
     name: Yup.string().required("Campo obrigatório"),
   });
 
-  const generateQRCode = async (name: string) => {
-    try {
-      const formatValue = formatQRCodeValue(name);
-      console.log(formatValue);
-      const data = { qrcode: formatValue };
+  const generateQRCode = (name: string) => {
+    const formattedName = formatQRCodeValue(name);
 
-      await qrcodeService.generateQRCode(data);
-
-      setQRCodeValue(formatValue);
-      setHasQRCode(true);
-    } catch (error) {
-      if (error instanceof AppError) {
-        snackbar({ message: `Error: ${error.message}`, variant: "error" });
-      }
-    }
+    setHasQRCode(true);
+    setQRCodeValue(formattedName);
   };
 
   return (

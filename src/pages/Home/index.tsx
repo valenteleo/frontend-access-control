@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, DatePicker, Divider } from "antd";
 import Layout from "../../components/Layout";
 import TitleBarPage from "../../components/TitleBarPage";
@@ -23,6 +23,11 @@ import DynamicCells from "./DynamicCells";
 import SelectCustom from "../../components/SelectCustom";
 import WithoutVisit from "./WithoutVisits";
 import { ArrayIsEmpty } from "../../utils";
+import { useAuth } from "../../contexts/AuthContext";
+import { capitalize } from "../../utils/format";
+import { useIoCContext } from "../../contexts/IoCContext";
+import { IVisitsService } from "../../modules/visits/models";
+import { Types } from "../../ioc/types";
 
 export interface IMock {
   name: string;
@@ -36,18 +41,17 @@ interface StyledMenuProps {
 }
 
 const Home: React.FC = () => {
+  const { serviceContainer } = useIoCContext();
+  const { userData } = useAuth();
   const theme = useTheme();
 
   const { RangePicker } = DatePicker;
 
-  const mock: IMock[] = [
-    // {
-    //   name: "Arthur Morgan",
-    //   cpf: "123.456.789-10",
-    //   date: "10/10/2024",
-    //   status: "Agendado",
-    // },
-  ];
+  const visitsService = serviceContainer.get<IVisitsService>(
+    Types.Visits.IVisitsService
+  );
+
+  const mock: IMock[] = [];
 
   const isDataEmpty = ArrayIsEmpty(mock);
 
@@ -74,6 +78,21 @@ const Home: React.FC = () => {
     const handleAlert = () => {
       alert(data.name);
     };
+
+    const fetchScheduledVisits = async () => {
+      try {
+        const response = await visitsService.getScheduledVisits(
+          userData.user_id
+        );
+        console.log(response);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    useEffect(() => {
+      fetchScheduledVisits();
+    }, []);
 
     return (
       <Box>
@@ -103,7 +122,7 @@ const Home: React.FC = () => {
       <Card>
         <Stack direction="row" justifyContent="space-between">
           <TitleAndSubtitle
-            title="Olá, Leonardo!"
+            title={`Olá, ${capitalize(userData?.nome)}!`}
             subtitle="Confira sua agenda de visitas marcadas."
           />
 

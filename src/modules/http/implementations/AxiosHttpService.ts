@@ -14,6 +14,7 @@ export class AxiosHttpService implements IHttpService {
     this.httpInstance = Axios.create({
       baseURL: appConfig.api.url,
       timeout: appConfig.api.timeout,
+      withCredentials: true,
     });
   }
 
@@ -45,7 +46,8 @@ export class AxiosHttpService implements IHttpService {
       .get(path, params)
       .then(({ data }) => data)
       .catch((err) => {
-        throw err;
+        const error: AxiosError<{ message: string }> = err;
+        throw new AppError(error.response?.data.message || error.message);
       });
   }
 
