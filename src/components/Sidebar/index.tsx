@@ -9,7 +9,7 @@ import {
   useTheme,
 } from "@mui/material";
 import { ROUTES } from "../../appConfig/routes";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   CalendarMonthOutlined,
   HomeOutlined,
@@ -39,30 +39,43 @@ interface IMenuList {
 const Sidebar: React.FC = () => {
   const [openDrawer, setOpenDrawer] = useState(false);
 
+  const location = useLocation();
   const theme = useTheme();
   const styles = useStyles();
   const navigate = useNavigate();
+
+  const selectedPath = (path: string): string => {
+    return location.pathname.includes(path)
+      ? theme.palette.error.light
+      : theme.palette.grey[600];
+  };
 
   const menuList: IMenuList[] = [
     {
       title: "Início",
       redirectTo: ROUTES.HOME,
-      startIcon: <HomeOutlined htmlColor={theme.palette.grey[600]} />,
+      startIcon: <HomeOutlined htmlColor={selectedPath(ROUTES.HOME)} />,
     },
     {
       title: "Cadastrar usuário",
       redirectTo: ROUTES.REGISTER().USER,
-      startIcon: <HowToRegOutlined htmlColor={theme.palette.grey[600]} />,
+      startIcon: (
+        <HowToRegOutlined htmlColor={selectedPath(ROUTES.REGISTER().USER)} />
+      ),
     },
     {
       title: "Gerar QR Code",
       redirectTo: ROUTES.GENERATE,
-      startIcon: <QrCodeOutlined htmlColor={theme.palette.grey[600]} />,
+      startIcon: <QrCodeOutlined htmlColor={selectedPath(ROUTES.GENERATE)} />,
     },
     {
       title: "Cadastrar visita",
       redirectTo: ROUTES.REGISTER().VISIT,
-      startIcon: <CalendarMonthOutlined htmlColor={theme.palette.grey[600]} />,
+      startIcon: (
+        <CalendarMonthOutlined
+          htmlColor={selectedPath(ROUTES.REGISTER().VISIT)}
+        />
+      ),
     },
   ];
 
@@ -77,7 +90,11 @@ const Sidebar: React.FC = () => {
           {menuList.map((items, index) => (
             <MenuItem
               key={index}
-              sx={{ width: "100%", fontFamily: "Poppins" }}
+              sx={{
+                width: "100%",
+                fontFamily: "Poppins",
+                color: selectedPath(items.redirectTo),
+              }}
               onClick={() => navigate(items.redirectTo)}
             >
               <Box sx={{ marginRight: 1 }}>{items.startIcon}</Box>
