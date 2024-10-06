@@ -1,5 +1,6 @@
 import { AuthenticationTypes } from "../modules/authentication/container";
 import { QRCodeTypes } from "../modules/qrcode/container/types";
+import { RegisterTypes } from "../modules/register/container";
 import { VisitsTypes } from "../modules/visits/container";
 
 export const Types = {
@@ -7,4 +8,5 @@ export const Types = {
   QRCode: { ...QRCodeTypes },
   Authentication: { ...AuthenticationTypes },
   Visits: { ...VisitsTypes },
+  Register: { ...RegisterTypes },
 };

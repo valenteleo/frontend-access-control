@@ -9,15 +9,19 @@ export class AutheticationService implements IAuthenticationService {
 
   public async signIn(email: string, password: string): Promise<IUserData> {
     const data = { login: email, senha: password };
-    const response = await this.httpInstance.post("/login", data);
+    const response = await this.httpInstance.post<IUserData>("/login", data);
 
     return response;
   }
 
   public async getUserData(): Promise<IUserData> {
-    const response = await this.httpInstance.get("/usuario", {
-      withCredentials: true,
-    });
+    const response = await this.httpInstance.get<IUserData>("/usuario");
+
+    return response;
+  }
+
+  public async logout(): Promise<void> {
+    const response = await this.httpInstance.post("/logout");
 
     return response;
   }

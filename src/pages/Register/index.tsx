@@ -9,6 +9,9 @@ import { HowToRegOutlined } from "@mui/icons-material";
 import TitleAndSubtitle from "../../components/TitleAndSubtitle";
 import { AppError } from "../../utils/AppError";
 import useDialogAlert from "../../hooks/useDialogAlert";
+import { useIoCContext } from "../../contexts/IoCContext";
+import { IRegisterVisitService } from "../../modules/register/models";
+import { Types } from "../../ioc/types";
 
 const useStyles = (theme: Theme) => {
   return {
@@ -24,10 +27,15 @@ const useStyles = (theme: Theme) => {
 const Register: React.FC = () => {
   const [loading, setLoading] = useState(false);
 
+  const { serviceContainer } = useIoCContext();
   const { snackbar } = useDialogAlert();
 
   const theme = useTheme();
   const styles = useStyles(theme);
+
+  const registerService = serviceContainer.get<IRegisterVisitService>(
+    Types.Register.IRegisterVisitService
+  );
 
   const initialValues = {
     email: "",
@@ -50,10 +58,11 @@ const Register: React.FC = () => {
         login: values.email,
         nome: values.name,
         senha: values.password,
-        perfil: values.profile,
+        perfil: Number(values.profile),
       };
 
-      console.log(parseData);
+      await registerService.registerUser(parseData);
+
       snackbar({
         message: "Usuário cadastrado com sucesso!",
         variant: "success",

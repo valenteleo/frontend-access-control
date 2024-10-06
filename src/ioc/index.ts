@@ -13,6 +13,9 @@ import { IAuthenticationService } from "../modules/authentication/models";
 import { IVisitsService } from "../modules/visits/models";
 import { VisitsService } from "../modules/visits/services";
 
+import { IRegisterVisitService } from "../modules/register/models";
+import { RegisterVisitService } from "../modules/register/services";
+
 const appIocContainer = new Container({ defaultScope: "Singleton" });
 
 appIocContainer.bind<IHttpService>(Types.IHttpService).to(AxiosHttpService);
@@ -28,5 +31,9 @@ appIocContainer
 appIocContainer
   .bind<IVisitsService>(Types.Visits.IVisitsService)
   .to(VisitsService);
+
+appIocContainer
+  .bind<IRegisterVisitService>(Types.Register.IRegisterVisitService)
+  .to(RegisterVisitService);
 
 export { appIocContainer };

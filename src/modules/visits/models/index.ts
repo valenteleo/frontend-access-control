@@ -12,8 +12,14 @@ export interface ScheduledVisits {
   dataaut: null;
   codusuario: number;
   status: string;
+  usercad: string;
 }
 
 export interface IVisitsService {
-  getScheduledVisits(id: number): Promise<IClientsVisit>;
+  getScheduledVisits(
+    id: number,
+    minData: string,
+    maxData: string,
+    status: string
+  ): Promise<IClientsVisit>;
 }

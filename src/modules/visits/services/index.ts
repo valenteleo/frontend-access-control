@@ -7,9 +7,14 @@ import type { IHttpService } from "../../http/models/IHttpService";
 export class VisitsService implements IVisitsService {
   @inject(Types.IHttpService) private httpInstance!: IHttpService;
 
-  public async getScheduledVisits(id: number): Promise<IClientsVisit> {
+  public async getScheduledVisits(
+    id: number,
+    minData: string,
+    maxData: string,
+    status: string
+  ): Promise<IClientsVisit> {
     const response = await this.httpInstance.get(
-      `/clientes?codusuario=${id}`,
+      `/clientes?codusuario=${id}&datamin=${minData}&datamax=${maxData}&status=${status}`,
       {}
     );
 

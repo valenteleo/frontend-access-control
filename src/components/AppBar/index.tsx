@@ -4,7 +4,13 @@ import Sidebar from "../Sidebar";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../appConfig/routes";
 import { useAuth } from "../../contexts/AuthContext";
-import { IUserData } from "../../modules/authentication/models";
+import {
+  IAuthenticationService,
+  IUserData,
+} from "../../modules/authentication/models";
+import { useIoCContext } from "../../contexts/IoCContext";
+import { Types } from "../../ioc/types";
+import useDialogAlert from "../../hooks/useDialogAlert";
 
 const useStyles = (theme: Theme) => {
   return {
@@ -23,16 +29,35 @@ const useStyles = (theme: Theme) => {
 };
 
 const AppBar: React.FC = () => {
-  const { setIsAuthenticated, setUserData, userData } = useAuth();
+  const { setIsAuthenticated, setUserData, setRedirectByLogout, userData } =
+    useAuth();
+  const { serviceContainer } = useIoCContext();
+  const { snackbar } = useDialogAlert();
 
   const theme = useTheme();
   const styles = useStyles(theme);
   const navigate = useNavigate();
 
-  const logout = () => {
-    setIsAuthenticated(false);
-    setUserData({} as IUserData);
-    navigate(ROUTES.LOGIN);
+  const authenticationService = serviceContainer.get<IAuthenticationService>(
+    Types.Authentication.IAuthenticationService
+  );
+
+  const handleLogout = async () => {
+    try {
+      await authenticationService.logout();
+
+      setIsAuthenticated(false);
+      setUserData({} as IUserData);
+      setRedirectByLogout(true);
+      navigate(ROUTES.LOGIN);
+
+      snackbar({ message: "Até mais!", variant: "success" });
+    } catch {
+      snackbar({
+        message: "Houve um erro ao fazer o logout",
+        variant: "error",
+      });
+    }
   };
 
   return (
@@ -40,7 +65,7 @@ const AppBar: React.FC = () => {
       <Sidebar />
 
       <Stack direction="row" gap={2}>
-        <IconButton onClick={logout}>
+        <IconButton onClick={handleLogout}>
           <Logout />
         </IconButton>
 

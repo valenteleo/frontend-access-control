@@ -33,7 +33,8 @@ const Login: React.FC = () => {
   const [loading, setLoading] = useState(false);
 
   const { serviceContainer } = useIoCContext();
-  const { userData, setIsAuthenticated, setUserData } = useAuth();
+  const { userData, setIsAuthenticated, setUserData, redirectByLogout } =
+    useAuth();
   const { snackbar } = useDialogAlert();
 
   const navigate = useNavigate();
@@ -89,30 +90,32 @@ const Login: React.FC = () => {
   };
 
   useEffect(() => {
-    (async () => {
+    const handleAuthentication = async () => {
       try {
-        const response = await autheticationService.getUserData();
-
-        const loginSuccessfull = Object.keys(response).length > 0;
-
-        if (loginSuccessfull) {
+        const isAuthenticated = await autheticationService.getUserData();
+        if (isAuthenticated) {
           setIsAuthenticated(true);
-          setUserData(response);
+          setUserData(isAuthenticated);
           navigate(ROUTES.HOME);
         }
+
+        snackbar({
+          message: "Bem-vindo(a) novamente",
+          variant: "success",
+          anchorOrigin: {
+            vertical: "top",
+            horizontal: "right",
+          },
+        });
       } catch (error) {
-        if (error instanceof AppError) {
-          console.log(error.message);
-        }
+        console.log(error);
       }
-    })();
-  }, [
-    autheticationService,
-    navigate,
-    setIsAuthenticated,
-    setUserData,
-    snackbar,
-  ]);
+    };
+
+    if (!redirectByLogout) {
+      handleAuthentication();
+    }
+  }, []);
 
   return (
     <Box sx={styles.background}>

@@ -9,12 +9,26 @@ import FormLogVisit from "./FormLogVisit";
 import useDialogAlert from "../../hooks/useDialogAlert";
 import { AppError } from "../../utils/AppError";
 import { useState } from "react";
+import {
+  IRegisterVisit,
+  IRegisterVisitService,
+} from "../../modules/register/models";
+import { useAuth } from "../../contexts/AuthContext";
+import { formatQRCodeValue } from "../../utils";
+import { useIoCContext } from "../../contexts/IoCContext";
+import { Types } from "../../ioc/types";
 
 const LogVisit: React.FC = () => {
   const [loading, setLoading] = useState(false);
 
   const theme = useTheme();
   const { snackbar } = useDialogAlert();
+  const { userData } = useAuth();
+  const { serviceContainer } = useIoCContext();
+
+  const registerVisitService = serviceContainer.get<IRegisterVisitService>(
+    Types.Register.IRegisterVisitService
+  );
 
   const initialValues = {
     name: "",
@@ -30,18 +44,20 @@ const LogVisit: React.FC = () => {
 
   const registerUser = async (value: typeof initialValues) => {
     try {
-      setLoading(true);
-      snackbar({
-        message: "Visita cadastrada com sucesso!",
-        variant: "success",
-      });
+      const data: IRegisterVisit = {
+        codusuario: userData.usuario_id,
+        nome: value.name,
+        cpf: value.cpf,
+        datavis: value.date,
+        codqr: formatQRCodeValue(value.name, value.date),
+      };
 
-      console.log(value);
+      await registerVisitService.registerVisit(data);
     } catch (error) {
       if (error instanceof AppError) {
         snackbar({
           message: `Error: ${error.message}`,
-          variant: "success",
+          variant: "error",
         });
       }
     } finally {

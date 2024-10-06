@@ -1,11 +1,17 @@
 import { Fragment } from "react";
 import { TableCell, Typography, useTheme } from "@mui/material";
-import { IMock } from ".";
+import { ScheduledVisits } from "../../modules/visits/models";
 
-const DynamicCells: React.FC<{ items: IMock }> = ({ items }) => {
+const DynamicCells: React.FC<{ items: ScheduledVisits }> = ({ items }) => {
   const theme = useTheme();
 
-  const data = [items.name, items.cpf, items.date, items.status];
+  const data = [
+    items.nome,
+    items.cpf,
+    items.datavis,
+    items.usercad ?? "Usuário",
+    items.status,
+  ];
 
   const tagStylesStatus = (status: string) => {
     switch (status) {
@@ -18,7 +24,7 @@ const DynamicCells: React.FC<{ items: IMock }> = ({ items }) => {
       case "Cancelado":
         return theme.palette.error.dark;
       default:
-        return "transparent";
+        return theme.palette.grey[700];
     }
   };
 
@@ -29,11 +35,11 @@ const DynamicCells: React.FC<{ items: IMock }> = ({ items }) => {
           <Typography
             sx={{
               color:
-                index === 3 ? tagStylesStatus(item) : theme.palette.grey[700],
-              textAlign: index === 3 ? "center" : "left",
+                index === 4 ? tagStylesStatus(item) : theme.palette.grey[700],
+              textAlign: "left",
               padding: 1,
               borderRadius: "8px",
-              fontWeight: index === 3 ? 600 : "none",
+              fontWeight: index === 4 ? 600 : "none",
               fontFamily: "Poppins",
             }}
           >

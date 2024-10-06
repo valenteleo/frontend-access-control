@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Stack,
   MenuList,
@@ -17,6 +17,7 @@ import {
   Menu,
   QrCodeOutlined,
 } from "@mui/icons-material";
+import { useAuth } from "../../contexts/AuthContext";
 
 const useStyles = () => {
   return {
@@ -38,6 +39,9 @@ interface IMenuList {
 
 const Sidebar: React.FC = () => {
   const [openDrawer, setOpenDrawer] = useState(false);
+  const [menu, setMenu] = useState<IMenuList[]>([]);
+
+  const { userData } = useAuth();
 
   const location = useLocation();
   const theme = useTheme();
@@ -79,6 +83,20 @@ const Sidebar: React.FC = () => {
     },
   ];
 
+  useEffect(() => {
+    const userIsAdmin = userData.perfil === 0;
+
+    if (!userIsAdmin) {
+      const filtered = menuList.filter(
+        (items) => items.title !== "Cadastrar usuário"
+      );
+
+      setMenu(filtered);
+    } else {
+      setMenu(menuList);
+    }
+  }, []);
+
   return (
     <Stack>
       <IconButton onClick={() => setOpenDrawer(true)}>
@@ -87,7 +105,7 @@ const Sidebar: React.FC = () => {
 
       <Drawer open={openDrawer} onClose={() => setOpenDrawer(false)}>
         <MenuList sx={styles.menuList}>
-          {menuList.map((items, index) => (
+          {menu.map((items, index) => (
             <MenuItem
               key={index}
               sx={{

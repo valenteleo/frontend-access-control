@@ -26,23 +26,23 @@ import { ArrayIsEmpty } from "../../utils";
 import { useAuth } from "../../contexts/AuthContext";
 import { capitalize } from "../../utils/format";
 import { useIoCContext } from "../../contexts/IoCContext";
-import { IVisitsService } from "../../modules/visits/models";
+import { IVisitsService, ScheduledVisits } from "../../modules/visits/models";
 import { Types } from "../../ioc/types";
-
-export interface IMock {
-  name: string;
-  cpf: string;
-  date: string;
-  status: string;
-}
-
+import useDialogAlert from "../../hooks/useDialogAlert";
+import { AppError } from "../../utils/AppError";
 interface StyledMenuProps {
-  data: IMock;
+  data: ScheduledVisits;
 }
 
 const Home: React.FC = () => {
+  const [clientsData, setClientsData] = useState<ScheduledVisits[]>([]);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [filterStatus, setFilterStatus] = useState("");
+
   const { serviceContainer } = useIoCContext();
   const { userData } = useAuth();
+  const { snackbar } = useDialogAlert();
   const theme = useTheme();
 
   const { RangePicker } = DatePicker;
@@ -50,10 +50,7 @@ const Home: React.FC = () => {
   const visitsService = serviceContainer.get<IVisitsService>(
     Types.Visits.IVisitsService
   );
-
-  const mock: IMock[] = [];
-
-  const isDataEmpty = ArrayIsEmpty(mock);
+  const isDataEmpty = ArrayIsEmpty(clientsData);
 
   const optionsFilterStatus = [
     { value: "agendado", label: "Agendado" },
@@ -61,6 +58,26 @@ const Home: React.FC = () => {
     { value: "nao compareceu", label: "Não compareceu" },
     { value: "cancelado", label: "Cancelado" },
   ];
+
+  const fetchScheduledVisits = async () => {
+    try {
+      const response = await visitsService.getScheduledVisits(
+        userData.usuario_id,
+        startDate,
+        endDate,
+        filterStatus
+      );
+
+      setClientsData(response.clientes);
+    } catch (error) {
+      if (error instanceof AppError) {
+        snackbar({
+          message: `Error: ${error.message}`,
+          variant: "error",
+        });
+      }
+    }
+  };
 
   const StyledMenu: React.FC<StyledMenuProps> = ({ data }: StyledMenuProps) => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -76,23 +93,8 @@ const Home: React.FC = () => {
     };
 
     const handleAlert = () => {
-      alert(data.name);
+      alert(data.nome);
     };
-
-    const fetchScheduledVisits = async () => {
-      try {
-        const response = await visitsService.getScheduledVisits(
-          userData.user_id
-        );
-        console.log(response);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    useEffect(() => {
-      fetchScheduledVisits();
-    }, []);
 
     return (
       <Box>
@@ -111,6 +113,10 @@ const Home: React.FC = () => {
       </Box>
     );
   };
+
+  useEffect(() => {
+    fetchScheduledVisits();
+  }, []);
 
   return (
     <Layout>
@@ -144,10 +150,8 @@ const Home: React.FC = () => {
                   format="DD/MM/YYYY"
                   onChange={(value) => {
                     const [startDate, endDate] = value!;
-                    console.log(
-                      startDate?.format("YYYY-MM-DD"),
-                      endDate?.format("YYYY-MM-DD")
-                    );
+                    setStartDate(startDate!.format("YYYY-MM-DD"));
+                    setEndDate(endDate!.format("YYYY-MM-DD"));
                   }}
                   style={{
                     borderColor: theme.palette.grey[400],
@@ -161,8 +165,8 @@ const Home: React.FC = () => {
               <SelectCustom
                 label="Status"
                 style={{ minWidth: "15rem" }}
-                onChange={(event) => {
-                  console.log(event.target.value);
+                onChange={({ target }) => {
+                  setFilterStatus(target.value);
                 }}
                 options={optionsFilterStatus}
               />
@@ -179,7 +183,6 @@ const Home: React.FC = () => {
                 {homeHeaderColumns.map((items, index) => (
                   <TableCell
                     key={index}
-                    align={index === 3 ? "center" : "left"}
                     sx={{
                       fontWeight: "600",
                       fontFamily: "Poppins",
@@ -193,7 +196,7 @@ const Home: React.FC = () => {
             </TableHead>
 
             <TableBody>
-              {mock.map((items, index) => (
+              {clientsData.map((items, index) => (
                 <TableRow key={index}>
                   <DynamicCells items={items} />
 
