@@ -6,7 +6,7 @@ import GenerateQRCode from "../../pages/GenerateQRCode";
 import Error from "../../pages/Error";
 import LogVisit from "../../pages/LogVisit";
 import Home from "../../pages/Home";
-import RouteGuard from "./RouteGuard";
+import RouteGuard, { ProfilesDescription } from "./RouteGuard";
 
 const RoutesApp: React.FC = () => {
   return (
@@ -20,7 +20,7 @@ const RoutesApp: React.FC = () => {
         <Route
           path={ROUTES.HOME}
           element={
-            <RouteGuard>
+            <RouteGuard rules={ProfilesDescription.Admin}>
               <Home />
             </RouteGuard>
           }
@@ -29,7 +29,7 @@ const RoutesApp: React.FC = () => {
         <Route
           path={ROUTES.REGISTER().USER}
           element={
-            <RouteGuard>
+            <RouteGuard rules={ProfilesDescription.User}>
               <Register />
             </RouteGuard>
           }
@@ -38,7 +38,7 @@ const RoutesApp: React.FC = () => {
         <Route
           path={ROUTES.GENERATE}
           element={
-            <RouteGuard>
+            <RouteGuard rules={ProfilesDescription.Admin}>
               <GenerateQRCode />
             </RouteGuard>
           }
@@ -47,7 +47,7 @@ const RoutesApp: React.FC = () => {
         <Route
           path={ROUTES.REGISTER().VISIT}
           element={
-            <RouteGuard>
+            <RouteGuard rules={ProfilesDescription.Admin}>
               <LogVisit />
             </RouteGuard>
           }
