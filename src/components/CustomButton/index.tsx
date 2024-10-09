@@ -15,7 +15,6 @@ interface CustomButtonProps extends ButtonBaseProps {
   variant?: CustomButtonTypes;
 }
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 //@ts-ignore
 const CustomButton = forwardRef<ButtonBase, CustomButtonProps>(
   (
