@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-empty-object-type */
 import { injectable } from "inversify";
 import { IHttpService } from "../models/IHttpService";
 import Axios, { AxiosInstance, AxiosError } from "axios";

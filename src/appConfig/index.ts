@@ -1,6 +1,6 @@
 export default {
   api: {
-    url: "https://2b26-2804-d4b-82a8-3100-bcbd-1621-9648-86c2.ngrok-free.app/",
+    url: "https://45a0-2804-18-688f-293b-1974-a5c2-1ced-5a45.ngrok-free.app",
     timeout: 15000,
   },
 };

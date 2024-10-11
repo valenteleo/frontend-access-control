@@ -1,6 +1,7 @@
 import { Fragment } from "react";
 import { TableCell, Typography, useTheme } from "@mui/material";
 import { ScheduledVisits } from "../../modules/visits/models";
+import { translateStatus } from "./translate";
 
 const DynamicCells: React.FC<{ items: ScheduledVisits }> = ({ items }) => {
   const theme = useTheme();
@@ -10,16 +11,16 @@ const DynamicCells: React.FC<{ items: ScheduledVisits }> = ({ items }) => {
     items.cpf,
     items.datavis,
     items.usercad ?? "Usuário",
-    items.status,
+    translateStatus(items.status),
   ];
 
   const tagStylesStatus = (status: string) => {
     switch (status) {
       case "Agendado":
         return theme.palette.success.light;
-      case "Compareceu":
+      case "Atendido":
         return theme.palette.info.light;
-      case "Não compareceu":
+      case "Omisso":
         return theme.palette.warning.light;
       case "Cancelado":
         return theme.palette.error.dark;

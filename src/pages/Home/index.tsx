@@ -30,6 +30,7 @@ import { IVisitsService, ScheduledVisits } from "../../modules/visits/models";
 import { Types } from "../../ioc/types";
 import useDialogAlert from "../../hooks/useDialogAlert";
 import { AppError } from "../../utils/AppError";
+import moment from "moment";
 interface StyledMenuProps {
   data: ScheduledVisits;
 }
@@ -43,9 +44,9 @@ const Home: React.FC = () => {
   const { serviceContainer } = useIoCContext();
   const { userData } = useAuth();
   const { snackbar } = useDialogAlert();
-  const theme = useTheme();
-
   const { RangePicker } = DatePicker;
+
+  const theme = useTheme();
 
   const visitsService = serviceContainer.get<IVisitsService>(
     Types.Visits.IVisitsService
@@ -54,8 +55,8 @@ const Home: React.FC = () => {
 
   const optionsFilterStatus = [
     { value: "agendado", label: "Agendado" },
-    { value: "compareceu", label: "Compareceu" },
-    { value: "nao compareceu", label: "Não compareceu" },
+    { value: "atendido", label: "Atendido" },
+    { value: "omisso", label: "Omisso" },
     { value: "cancelado", label: "Cancelado" },
   ];
 
@@ -69,6 +70,27 @@ const Home: React.FC = () => {
       );
 
       setClientsData(response.clientes);
+    } catch (error) {
+      if (error instanceof AppError) {
+        snackbar({
+          message: `Error: ${error.message}`,
+          variant: "error",
+        });
+      }
+    }
+  };
+
+  const updateStatus = async (id: number, datavis: string) => {
+    try {
+      const formattedData = moment(datavis).format("YYYY-MM-DD");
+
+      await visitsService.updateVisitStatus(id, formattedData);
+      fetchScheduledVisits();
+
+      snackbar({
+        message: "Agendamento cancelado!",
+        variant: "success",
+      });
     } catch (error) {
       if (error instanceof AppError) {
         snackbar({
@@ -109,6 +131,13 @@ const Home: React.FC = () => {
           >
             Editar agendamento
           </MenuItem>
+
+          <MenuItem
+            sx={{ fontFamily: "Poppins", fontSize: 13 }}
+            onClick={() => updateStatus(data.cliente_id, data.datavis)}
+          >
+            Cancelar agendamento
+          </MenuItem>
         </Menu>
       </Box>
     );
@@ -116,7 +145,7 @@ const Home: React.FC = () => {
 
   useEffect(() => {
     fetchScheduledVisits();
-  }, []);
+  }, [endDate, filterStatus]);
 
   return (
     <Layout>

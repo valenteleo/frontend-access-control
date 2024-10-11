@@ -17,14 +17,18 @@ import { useAuth } from "../../contexts/AuthContext";
 import { formatQRCodeValue } from "../../utils";
 import { useIoCContext } from "../../contexts/IoCContext";
 import { Types } from "../../ioc/types";
+import { useNavigate } from "react-router-dom";
+import { ROUTES } from "../../appConfig/routes";
 
 const LogVisit: React.FC = () => {
   const [loading, setLoading] = useState(false);
 
-  const theme = useTheme();
   const { snackbar } = useDialogAlert();
   const { userData } = useAuth();
   const { serviceContainer } = useIoCContext();
+
+  const navigate = useNavigate();
+  const theme = useTheme();
 
   const registerVisitService = serviceContainer.get<IRegisterVisitService>(
     Types.Register.IRegisterVisitService
@@ -44,6 +48,8 @@ const LogVisit: React.FC = () => {
 
   const registerUser = async (value: typeof initialValues) => {
     try {
+      setLoading(true);
+
       const data: IRegisterVisit = {
         codusuario: userData.usuario_id,
         nome: value.name,
@@ -53,6 +59,13 @@ const LogVisit: React.FC = () => {
       };
 
       await registerVisitService.registerVisit(data);
+
+      snackbar({
+        message: "Visita cadastrada com sucesso!",
+        variant: "success",
+      });
+
+      navigate(ROUTES.HOME);
     } catch (error) {
       if (error instanceof AppError) {
         snackbar({

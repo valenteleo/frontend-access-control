@@ -22,4 +22,6 @@ export interface IVisitsService {
     maxData: string,
     status: string
   ): Promise<IClientsVisit>;
+
+  updateVisitStatus(id: number, datavis: string): Promise<IClientsVisit>;
 }
