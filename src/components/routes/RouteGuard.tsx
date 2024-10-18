@@ -1,6 +1,6 @@
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
-import { PropsWithChildren } from "react";
+import React, { PropsWithChildren } from "react";
 
 export enum ProfilesDescription {
   Admin = 0,
@@ -10,7 +10,7 @@ export enum ProfilesDescription {
 type Profiles = 0 | 1;
 
 interface RouteGuardProps extends PropsWithChildren {
-  children: any;
+  children: React.ReactNode;
   rules: Profiles;
 }
 

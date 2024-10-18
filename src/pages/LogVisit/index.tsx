@@ -8,7 +8,7 @@ import * as Yup from "yup";
 import FormLogVisit from "./FormLogVisit";
 import useDialogAlert from "../../hooks/useDialogAlert";
 import { AppError } from "../../utils/AppError";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   IRegisterVisit,
   IRegisterVisitService,
@@ -17,10 +17,23 @@ import { useAuth } from "../../contexts/AuthContext";
 import { formatQRCodeValue } from "../../utils";
 import { useIoCContext } from "../../contexts/IoCContext";
 import { Types } from "../../ioc/types";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { ROUTES } from "../../appConfig/routes";
+import { IVisitsService } from "../../modules/visits/models";
+import { formattedDate } from "../../utils/format";
 
 const LogVisit: React.FC = () => {
+  const [initialValues, setInitialValues] = useState({
+    name: "",
+    cpf: "",
+    date: "",
+  });
+
+  const url = useSearchParams();
+  const [searchParams] = url;
+  const id = searchParams.get("id");
+  const isEdit = Boolean(id);
+
   const [loading, setLoading] = useState(false);
 
   const { snackbar } = useDialogAlert();
@@ -34,17 +47,34 @@ const LogVisit: React.FC = () => {
     Types.Register.IRegisterVisitService
   );
 
-  const initialValues = {
-    name: "",
-    cpf: "",
-    date: "",
-  };
+  const visitService = serviceContainer.get<IVisitsService>(
+    Types.Visits.IVisitsService
+  );
 
   const validateLogSchema = Yup.object().shape({
-    name: Yup.string().required("Campo obrigatório"),
-    cpf: Yup.string().required("Campo obrigatório"),
-    date: Yup.string().required("Campo obrigatório"),
+    name: isEdit ? Yup.string() : Yup.string().required("Campo obrigatório"),
+    cpf: isEdit ? Yup.string() : Yup.string().required("Campo obrigatório"),
+    date: isEdit ? Yup.string() : Yup.string().required("Campo obrigatório"),
   });
+
+  const fetchScheduledById = async () => {
+    try {
+      const response = await visitService.getScheduledById(Number(id));
+
+      setInitialValues({
+        name: response.nome,
+        cpf: response.cpf,
+        date: formattedDate(response.datavis),
+      });
+    } catch (error) {
+      if (error instanceof AppError) {
+        snackbar({
+          message: `Error: ${error.message}`,
+          variant: "error",
+        });
+      }
+    }
+  };
 
   const registerUser = async (value: typeof initialValues) => {
     try {
@@ -55,7 +85,7 @@ const LogVisit: React.FC = () => {
         nome: value.name,
         cpf: value.cpf,
         datavis: value.date,
-        codqr: formatQRCodeValue(value.name, value.date),
+        codqr: formatQRCodeValue(value.name, value.cpf, value.date),
       };
 
       await registerVisitService.registerVisit(data);
@@ -78,10 +108,36 @@ const LogVisit: React.FC = () => {
     }
   };
 
+  const changeDateVisit = async (values: typeof initialValues) => {
+    try {
+      await visitService.updateDateVisit(Number(id), values.date);
+
+      snackbar({
+        message: "Data da visita atualizada",
+        variant: "success",
+      });
+
+      navigate(ROUTES.HOME);
+    } catch (error) {
+      if (error instanceof AppError) {
+        snackbar({
+          message: `Error: ${error.message}`,
+          variant: "error",
+        });
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (isEdit) {
+      fetchScheduledById();
+    }
+  }, []);
+
   return (
     <Layout>
       <TitleBarPage
-        title="Cadastrar visita"
+        title={`${isEdit ? "Editar" : "Cadastrar"} visita`}
         icon={<CalendarMonthOutlined htmlColor={theme.palette.grey[600]} />}
       />
 
@@ -102,9 +158,17 @@ const LogVisit: React.FC = () => {
         <Formik
           initialValues={initialValues}
           validationSchema={validateLogSchema}
-          onSubmit={registerUser}
+          onSubmit={isEdit ? changeDateVisit : registerUser}
         >
-          {(props) => <FormLogVisit {...props} isSubmitting={loading} />}
+          {(props) => (
+            <FormLogVisit
+              {...props}
+              isSubmitting={loading}
+              isEdit={isEdit}
+              stateValues={initialValues}
+              setStateValues={setInitialValues}
+            />
+          )}
         </Formik>
       </Card>
     </Layout>

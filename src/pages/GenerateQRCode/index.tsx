@@ -8,7 +8,6 @@ import { ListAltOutlined, QrCodeOutlined } from "@mui/icons-material";
 import TitleAndSubtitle from "../../components/TitleAndSubtitle";
 import TitleBarPage from "../../components/TitleBarPage";
 import ModalQRCode from "./ModalQRCode";
-import { formatQRCodeValue } from "../../utils";
 
 const useStyles = (theme: Theme) => {
   return {
@@ -42,10 +41,8 @@ const GenerateQRCode: React.FC = () => {
   });
 
   const generateQRCode = (name: string) => {
-    const formattedName = formatQRCodeValue(name);
-
     setHasQRCode(true);
-    setQRCodeValue(formattedName);
+    setQRCodeValue(name);
   };
 
   return (

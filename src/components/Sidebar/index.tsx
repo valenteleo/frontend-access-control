@@ -7,6 +7,7 @@ import {
   IconButton,
   Box,
   useTheme,
+  Theme,
 } from "@mui/material";
 import { ROUTES } from "../../appConfig/routes";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -19,7 +20,7 @@ import {
 } from "@mui/icons-material";
 import { useAuth } from "../../contexts/AuthContext";
 
-const useStyles = () => {
+const useStyles = (theme: Theme) => {
   return {
     menuList: {
       display: "flex",
@@ -27,6 +28,12 @@ const useStyles = () => {
       alignItems: "start",
       gap: 2,
       paddingX: "1rem",
+    },
+    iconSideBar: {
+      display: "flex",
+      padding: "1.5rem",
+      backgroundColor: theme.palette.grey[200],
+      borderRadius: "50%",
     },
   };
 };
@@ -45,7 +52,7 @@ const Sidebar: React.FC = () => {
 
   const location = useLocation();
   const theme = useTheme();
-  const styles = useStyles();
+  const styles = useStyles(theme);
   const navigate = useNavigate();
 
   const selectedPath = (path: string): string => {
@@ -104,6 +111,14 @@ const Sidebar: React.FC = () => {
       </IconButton>
 
       <Drawer open={openDrawer} onClose={() => setOpenDrawer(false)}>
+        <Stack alignItems={"center"} mt={2} mb={2}>
+          <Box sx={styles.iconSideBar}>
+            <QrCodeOutlined
+              sx={{ fontSize: "2.5rem" }}
+              htmlColor={theme.palette.grey[600]}
+            />
+          </Box>
+        </Stack>
         <MenuList sx={styles.menuList}>
           {menu.map((items, index) => (
             <MenuItem

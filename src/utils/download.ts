@@ -18,3 +18,14 @@ export const downloadSVG = (
     a.click();
   }
 };
+
+export const downloadXLSX = (data: any, key: string) => {
+  const fileBlob = new Blob([data], {
+    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8",
+  });
+  const fileURL = URL.createObjectURL(fileBlob);
+  const a = document.createElement("a");
+  a.href = fileURL;
+  a.download = `${key}.xlsx`;
+  a.click();
+};

@@ -1,10 +1,12 @@
-import moment from "moment";
-
-export const formatQRCodeValue = (name: string, employee?: string) => {
+export const formatQRCodeValue = (
+  name: string,
+  cpf?: string,
+  date?: string
+) => {
   const formatName = name.toUpperCase().replaceAll(" ", "_");
-  const formatDate = moment().format().split("T")[0];
+  const threeFirst = cpf?.slice(0, 3);
 
-  return `${formatName}.${formatDate}`.concat(employee ? `.${employee}` : "");
+  return `${formatName}.${threeFirst}.${date}`;
 };
 
 export const ArrayIsEmpty = (arr: unknown[]): boolean => {

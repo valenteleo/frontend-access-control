@@ -32,7 +32,15 @@ const DynamicCells: React.FC<{ items: ScheduledVisits }> = ({ items }) => {
   return (
     <Fragment>
       {data.map((item, index) => (
-        <TableCell key={index}>
+        <TableCell
+          //@ts-ignore
+          sx={{
+            position: index === 0 && "sticky",
+            left: 0,
+            backgroundColor: index === 0 && theme.palette.grey[100],
+          }}
+          key={index}
+        >
           <Typography
             sx={{
               color:

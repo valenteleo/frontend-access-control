@@ -28,6 +28,7 @@ export default tseslint.config(
       "react-hooks/exhaustive-deps": "off",
       "@typescript-eslint/ban-ts-comment": "off",
       "@typescript-eslint/no-empty-object-type": "off",
+      "@typescript-eslint/no-unused-vars": "off",
     },
   }
 );

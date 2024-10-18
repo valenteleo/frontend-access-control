@@ -15,19 +15,22 @@ import dayjs from "dayjs";
 import { RangePickerProps } from "antd/es/date-picker";
 import CustomButton from "../../components/CustomButton";
 import { CustomButtonVariant } from "../../components/CustomButton/CustomButtonVariant";
-
 interface IFormValues {
   name: string;
   cpf: string;
   date: string;
 }
-
 interface FormLogVisitProps extends FormikProps<IFormValues> {
   isSubmitting: boolean;
+  stateValues: IFormValues;
+  setStateValues(form): void;
+  isEdit: boolean;
 }
 
 const FormLogVisit: React.FC<FormLogVisitProps> = ({
   isSubmitting,
+  stateValues,
+  setStateValues,
   ...props
 }: FormLogVisitProps) => {
   const theme = useTheme();
@@ -57,11 +60,19 @@ const FormLogVisit: React.FC<FormLogVisitProps> = ({
             <Box>
               <TextField
                 key={index}
+                disabled={props.isEdit}
                 fullWidth
                 size="small"
                 name={items.name}
+                value={stateValues[items.name]}
                 label={items.label}
-                onChange={props.handleChange}
+                onChange={(event) => {
+                  props.handleChange(event);
+                  setStateValues((prevState) => ({
+                    ...prevState,
+                    [items.name]: event.target.value,
+                  }));
+                }}
                 onBlur={props.handleBlur}
               />
 
@@ -81,10 +92,17 @@ const FormLogVisit: React.FC<FormLogVisitProps> = ({
             placeholder="Selecione"
             style={{ width: "100%", borderColor: theme.palette.grey[400] }}
             size="large"
-            disabledDate={disabledDate}
-            onChange={(date: dayjs.Dayjs) =>
-              props.setFieldValue("date", date.format("YYYY-MM-DD"))
+            value={
+              stateValues.date ? dayjs(stateValues.date, "YYYY-MM-DD") : null
             }
+            disabledDate={disabledDate}
+            onChange={(date: dayjs.Dayjs) => {
+              props.setFieldValue("date", date.format("YYYY-MM-DD"));
+              setStateValues((prevState) => ({
+                ...prevState,
+                date: date.format("YYYY-MM-DD"),
+              }));
+            }}
             onBlur={props.handleBlur}
           />
           {props.errors.date && props.touched.date && (
@@ -99,7 +117,7 @@ const FormLogVisit: React.FC<FormLogVisitProps> = ({
         <CustomButton
           title="Cancelar"
           variant={CustomButtonVariant.OUTLINED}
-          onClick={() => navigate(ROUTES.REGISTER().USER)}
+          onClick={() => navigate(ROUTES.HOME)}
         />
         <CustomButton
           title="Salvar"

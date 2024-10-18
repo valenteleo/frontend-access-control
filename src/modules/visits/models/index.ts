@@ -22,6 +22,13 @@ export interface IVisitsService {
     maxData: string,
     status: string
   ): Promise<IClientsVisit>;
-
-  updateVisitStatus(id: number, datavis: string): Promise<IClientsVisit>;
+  getScheduledById(id: number): Promise<ScheduledVisits>;
+  cancelVisit(id: number): Promise<IClientsVisit>;
+  updateDateVisit(id: number, date: string): Promise<IClientsVisit>;
+  downloadReport(
+    id: number,
+    minData: string,
+    maxData: string,
+    status: string
+  ): Promise<Blob>;
 }
