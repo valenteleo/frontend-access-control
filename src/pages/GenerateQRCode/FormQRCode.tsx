@@ -8,6 +8,7 @@ import { Types } from "../../ioc/types";
 import { IQRCodeService } from "../../modules/qrcode/models/IQRCodeService";
 import useDialogAlert from "../../hooks/useDialogAlert";
 import { useAuth } from "../../contexts/AuthContext";
+import { ProfilesDescription } from "../../components/Routes/RouteGuard";
 
 interface IFormValues {
   name: string;
@@ -30,7 +31,10 @@ const FormQRCode: React.FC<FormikProps<IFormValues>> = ({
 
   const fetchAllQRCode = async () => {
     try {
-      const isAdmin = userData.perfil === 0 ? "" : userData.usuario_id;
+      const isAdmin =
+        userData.perfil === ProfilesDescription.Admin
+          ? ""
+          : userData.usuario_id;
 
       const response = await qrcodeService.getListQRCode(isAdmin);
 
