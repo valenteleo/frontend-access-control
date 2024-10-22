@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { DatePicker, Divider } from "antd";
 import Layout from "../../components/Layout";
 import TitleBarPage from "../../components/TitleBarPage";
@@ -17,6 +17,7 @@ import {
   useTheme,
   Card,
   TableContainer,
+  CircularProgress,
 } from "@mui/material";
 import { homeHeaderColumns } from "./HomeHeaderColumns";
 import { HomeOutlined, MoreVertOutlined } from "@mui/icons-material";
@@ -43,7 +44,8 @@ interface StyledMenuProps {
 }
 
 const Home: React.FC = () => {
-  const [loading, setLoading] = useState(false);
+  const [loadingVisits, setLoadingVisits] = useState(false);
+  const [loadingDownload, setLoadingDownload] = useState(false);
   const [clientsData, setClientsData] = useState<ScheduledVisits[]>([]);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -77,6 +79,8 @@ const Home: React.FC = () => {
 
   const fetchScheduledVisits = async () => {
     try {
+      setLoadingVisits(true);
+
       const response = await visitsService.getScheduledVisits(
         userData.usuario_id,
         startDate,
@@ -92,6 +96,8 @@ const Home: React.FC = () => {
           variant: "error",
         });
       }
+    } finally {
+      setLoadingVisits(false);
     }
   };
 
@@ -116,7 +122,7 @@ const Home: React.FC = () => {
 
   const downloadReport = async () => {
     try {
-      setLoading(true);
+      setLoadingDownload(true);
 
       const response = await visitsService.downloadReport(
         userData.usuario_id,
@@ -140,7 +146,7 @@ const Home: React.FC = () => {
         });
       }
     } finally {
-      setLoading(false);
+      setLoadingDownload(false);
     }
   };
 
@@ -219,7 +225,7 @@ const Home: React.FC = () => {
             <CustomButton
               title="Baixar relatório"
               variant={
-                loading
+                loadingDownload
                   ? CustomButtonVariant.CONTAINED_LOADING
                   : CustomButtonVariant.CONTAINED_DOWNLOAD
               }
@@ -289,45 +295,59 @@ const Home: React.FC = () => {
 
         <Divider />
 
-        {!isDataEmpty ? (
-          <TableContainer sx={{ overflowX: "scroll" }}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  {homeHeaderColumns.map((items, index) => (
-                    <TableCell
-                      key={index}
-                      //@ts-ignore
-                      sx={{
-                        position: index === 0 && "sticky",
-                        left: 0,
-                        backgroundColor: index === 0 && theme.palette.grey[100],
-                        fontWeight: "600",
-                        fontFamily: "Poppins",
-                        color: theme.palette.grey[700],
-                      }}
-                    >
-                      {items}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              </TableHead>
-
-              <TableBody>
-                {clientsData.map((items, index) => (
-                  <TableRow key={index}>
-                    <DynamicCells items={items} />
-
-                    <TableCell>
-                      <StyledMenu data={items} />
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+        {loadingVisits ? (
+          <Stack paddingY="5rem" alignItems="center" gap={2}>
+            <CircularProgress sx={{ color: theme.palette.grey[600] }} />
+            <Typography
+              sx={{ color: theme.palette.grey[700], fontFamily: "Poppins" }}
+            >
+              Carregando agenda de visitas...
+            </Typography>
+          </Stack>
         ) : (
-          <WithoutVisit />
+          <Fragment>
+            {!isDataEmpty ? (
+              <TableContainer sx={{ overflowX: "scroll" }}>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      {homeHeaderColumns.map((items, index) => (
+                        <TableCell
+                          key={index}
+                          //@ts-ignore
+                          sx={{
+                            position: index === 0 && "sticky",
+                            left: 0,
+                            backgroundColor:
+                              index === 0 && theme.palette.grey[100],
+                            fontWeight: "600",
+                            fontFamily: "Poppins",
+                            color: theme.palette.grey[700],
+                          }}
+                        >
+                          {items}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  </TableHead>
+
+                  <TableBody>
+                    {clientsData.map((items, index) => (
+                      <TableRow key={index}>
+                        <DynamicCells items={items} />
+
+                        <TableCell>
+                          <StyledMenu data={items} />
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            ) : (
+              <WithoutVisit />
+            )}
+          </Fragment>
         )}
       </Card>
     </Layout>
