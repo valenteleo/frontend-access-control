@@ -70,10 +70,11 @@ const FormQRCode: React.FC<FormikProps<IFormValues>> = ({
       <Stack direction="column" gap="2rem">
         <Stack direction="column">
           <SelectCustom
-            label="Lista de QRCode para visita"
+            label="Lista de QRCode de visitantes"
             name="name"
             options={qrCodes}
             onChange={props.handleChange}
+            onBlur={props.handleBlur}
           />
           {props.errors.name && <HelperText>{props.errors.name}</HelperText>}
         </Stack>
