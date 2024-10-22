@@ -1,7 +1,13 @@
-import { Stack, TextField, Typography, Divider, styled } from "@mui/material";
+import { Stack, Typography, Divider, styled } from "@mui/material";
 import { Form, FormikProps } from "formik";
 import CustomButton from "../../components/CustomButton";
-import { CustomButtonVariant } from "../../components/CustomButton/CustomButtonVariant";
+import SelectCustom from "../../components/SelectCustom";
+import { useState, useEffect } from "react";
+import { useIoCContext } from "../../contexts/IoCContext";
+import { Types } from "../../ioc/types";
+import { IQRCodeService } from "../../modules/qrcode/models/IQRCodeService";
+import useDialogAlert from "../../hooks/useDialogAlert";
+import { useAuth } from "../../contexts/AuthContext";
 
 interface IFormValues {
   name: string;
@@ -10,6 +16,40 @@ interface IFormValues {
 const FormQRCode: React.FC<FormikProps<IFormValues>> = ({
   ...props
 }: FormikProps<IFormValues>) => {
+  const [qrCodes, setQRCodes] = useState<
+    { label: string; value: string | number }[]
+  >([]);
+
+  const { serviceContainer } = useIoCContext();
+  const { snackbar } = useDialogAlert();
+  const { userData } = useAuth();
+
+  const qrcodeService = serviceContainer.get<IQRCodeService>(
+    Types.QRCode.IQRCodeService
+  );
+
+  const fetchAllQRCode = async () => {
+    try {
+      const isAdmin = userData.perfil === 0 ? "" : userData.usuario_id;
+
+      const response = await qrcodeService.getListQRCode(isAdmin);
+
+      const data = response.clientes.map((items) => {
+        return {
+          label: items.nome,
+          value: items.codqr,
+        };
+      });
+
+      setQRCodes(data);
+    } catch (error) {
+      snackbar({
+        message: "Erro ao buscar os QR Codes",
+        variant: "error",
+      });
+    }
+  };
+
   const HelperText = styled(Typography)(({ theme }) => ({
     fontFamily: "Poppins",
     fontSize: 12,
@@ -17,23 +57,19 @@ const FormQRCode: React.FC<FormikProps<IFormValues>> = ({
     paddingLeft: ".5rem",
   }));
 
-  const disabled = (): boolean => {
-    return !Object.values(props.values).every(Boolean);
-  };
+  useEffect(() => {
+    fetchAllQRCode();
+  }, []);
 
   return (
     <Form onSubmit={props.handleSubmit}>
       <Stack direction="column" gap="2rem">
         <Stack direction="column">
-          <TextField
+          <SelectCustom
+            label="Lista de QRCode para visita"
             name="name"
-            size="small"
-            label="Nome"
-            type="text"
-            placeholder="Insira"
+            options={qrCodes}
             onChange={props.handleChange}
-            onBlur={props.handleBlur}
-            value={props.values.name}
           />
           {props.errors.name && <HelperText>{props.errors.name}</HelperText>}
         </Stack>
@@ -41,15 +77,7 @@ const FormQRCode: React.FC<FormikProps<IFormValues>> = ({
         <Divider />
 
         <Stack direction="row" justifyContent="flex-end">
-          <CustomButton
-            title="Gerar"
-            type="submit"
-            variant={
-              disabled()
-                ? CustomButtonVariant.DISABLED
-                : CustomButtonVariant.CONTAINED
-            }
-          />
+          <CustomButton title="Gerar" type="submit" />
         </Stack>
       </Stack>
     </Form>

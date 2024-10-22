@@ -1,5 +1,5 @@
 import { injectable, inject } from "inversify";
-import { IQRCode, IQRCodeService } from "../models/IQRCodeService";
+import { IClientsQRCode, IQRCodeService } from "../models/IQRCodeService";
 import { Types } from "../../../ioc/types";
 import type { IHttpService } from "../../http/models/IHttpService";
 
@@ -8,11 +8,12 @@ export class QRCodeService implements IQRCodeService {
   @inject(Types.IHttpService)
   private httpInstance!: IHttpService;
 
-  public async generateQRCode(data: IQRCode): Promise<IQRCode> {
-    return await this.httpInstance.post("/qr-code/generate", data);
-  }
-
-  public async getAnyone(): Promise<void> {
-    return this.httpInstance.get("/qr-code/");
+  public async getListQRCode(
+    codusuario?: string | number
+  ): Promise<IClientsQRCode> {
+    const response = this.httpInstance.get<IClientsQRCode>(
+      `/status?codusuario=${codusuario}`
+    );
+    return response;
   }
 }

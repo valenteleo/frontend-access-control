@@ -1,8 +1,11 @@
+export interface IClientsQRCode {
+  clientes: IQRCode[];
+}
 export interface IQRCode {
-  qrcode: string;
+  nome: string;
+  codqr: string;
 }
 
 export interface IQRCodeService {
-  getAnyone: () => Promise<void>;
-  generateQRCode: (data: IQRCode) => Promise<IQRCode>;
+  getListQRCode(codusuario?: string | number): Promise<IClientsQRCode>;
 }
