@@ -4,6 +4,7 @@ import {
   ButtonBaseProps,
   CircularProgress,
   SvgIcon,
+  SxProps,
   Typography,
   useTheme,
 } from "@mui/material";
@@ -13,6 +14,7 @@ import { FileDownloadOutlined } from "@mui/icons-material";
 interface CustomButtonProps extends ButtonBaseProps {
   title: string;
   variant?: CustomButtonTypes;
+  sx?: SxProps;
 }
 
 //@ts-ignore
@@ -21,6 +23,7 @@ const CustomButton = forwardRef<ButtonBase, CustomButtonProps>(
     {
       title,
       variant = CustomButtonVariant.CONTAINED,
+      sx = {},
       ...props
     }: CustomButtonProps,
     ref
@@ -69,7 +72,7 @@ const CustomButton = forwardRef<ButtonBase, CustomButtonProps>(
       <ButtonBase
         disabled={isDisabled || isContainedDisabled}
         sx={{
-          ...props.sx,
+          ...sx,
           display: "flex",
           gap: 1,
           minWidth: "6rem",

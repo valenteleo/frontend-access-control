@@ -7,6 +7,7 @@ import Error from "../../pages/Error";
 import LogVisit from "../../pages/LogVisit";
 import Home from "../../pages/Home";
 import RouteGuard, { ProfilesDescription } from "./RouteGuard";
+import Users from "../../pages/Users";
 
 const RoutesApp: React.FC = () => {
   return (
@@ -49,6 +50,15 @@ const RoutesApp: React.FC = () => {
           element={
             <RouteGuard rules={ProfilesDescription.Admin}>
               <LogVisit />
+            </RouteGuard>
+          }
+        />
+
+        <Route
+          path={ROUTES.USERS}
+          element={
+            <RouteGuard rules={ProfilesDescription.User}>
+              <Users />
             </RouteGuard>
           }
         />

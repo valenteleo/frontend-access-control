@@ -13,9 +13,10 @@ import { ROUTES } from "../../appConfig/routes";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
   CalendarMonthOutlined,
+  GroupOutlined,
   HomeOutlined,
-  HowToRegOutlined,
   Menu,
+  PersonAddAltOutlined,
   QrCodeOutlined,
 } from "@mui/icons-material";
 import { useAuth } from "../../contexts/AuthContext";
@@ -71,7 +72,9 @@ const Sidebar: React.FC = () => {
       title: "Cadastrar usuário",
       redirectTo: ROUTES.REGISTER().USER,
       startIcon: (
-        <HowToRegOutlined htmlColor={selectedPath(ROUTES.REGISTER().USER)} />
+        <PersonAddAltOutlined
+          htmlColor={selectedPath(ROUTES.REGISTER().USER)}
+        />
       ),
     },
     {
@@ -87,6 +90,11 @@ const Sidebar: React.FC = () => {
           htmlColor={selectedPath(ROUTES.REGISTER().VISIT)}
         />
       ),
+    },
+    {
+      title: "Usuários",
+      redirectTo: ROUTES.USERS,
+      startIcon: <GroupOutlined htmlColor={selectedPath(ROUTES.USERS)} />,
     },
   ];
 

@@ -93,6 +93,7 @@ const Login: React.FC = () => {
     const handleAuthentication = async () => {
       try {
         const isAuthenticated = await autheticationService.getUserData();
+
         if (isAuthenticated) {
           setIsAuthenticated(true);
           setUserData(isAuthenticated);

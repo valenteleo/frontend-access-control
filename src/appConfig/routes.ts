@@ -6,4 +6,5 @@ export const ROUTES = {
     USER: "/cadastrar-usuario",
     VISIT: "/cadastrar-visita",
   }),
+  USERS: "/usuarios",
 };

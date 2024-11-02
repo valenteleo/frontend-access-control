@@ -94,8 +94,8 @@ const FormLogin: React.FC<FormLoginProps> = ({
         <Divider />
 
         <CustomButton
+          type="submit"
           title="Fazer login"
-          onClick={() => props.handleSubmit()}
           variant={
             isSubmitting
               ? CustomButtonVariant.CONTAINED_LOADING

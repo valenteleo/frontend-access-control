@@ -7,6 +7,11 @@ export enum ProfilesDescription {
   User = 1,
 }
 
+export enum Descriptions {
+  "Administrador",
+  "Usuário Comum",
+}
+
 type Profiles = 0 | 1;
 
 interface RouteGuardProps extends PropsWithChildren {
@@ -22,7 +27,7 @@ const RouteGuard: React.FC<RouteGuardProps> = ({
   const isAdmin = userData.perfil === ProfilesDescription.Admin;
   const isAuthorized = rules !== userData.perfil || isAdmin;
 
-  return isAuthenticated && isAuthorized ? children : <Navigate to="/login" />;
+  return isAuthenticated && isAuthorized ? children : <Navigate to="/" />;
 };
 
 export default RouteGuard;

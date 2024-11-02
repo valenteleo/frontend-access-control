@@ -5,7 +5,7 @@ import FormRegister from "./FormRegister";
 import Layout from "../../components/Layout";
 import { Card, Theme, useTheme } from "@mui/material";
 import TitleBarPage from "../../components/TitleBarPage";
-import { HowToRegOutlined } from "@mui/icons-material";
+import { PersonAddAltOutlined } from "@mui/icons-material";
 import TitleAndSubtitle from "../../components/TitleAndSubtitle";
 import { AppError } from "../../utils/AppError";
 import useDialogAlert from "../../hooks/useDialogAlert";
@@ -81,7 +81,7 @@ const Register: React.FC = () => {
     <Layout>
       <TitleBarPage
         title="Cadastrar usuário"
-        icon={<HowToRegOutlined htmlColor={theme.palette.grey[600]} />}
+        icon={<PersonAddAltOutlined htmlColor={theme.palette.grey[600]} />}
       />
       <Card sx={styles.card}>
         <TitleAndSubtitle
