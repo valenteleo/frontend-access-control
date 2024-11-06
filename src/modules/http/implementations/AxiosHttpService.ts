@@ -36,7 +36,7 @@ export class AxiosHttpService implements IHttpService {
         throw new AppError("Tempo de conexão esgotado");
       }
 
-      if (error.status === 401) {
+      if (error.status === 401 && error.message.includes("token")) {
         throw new AppError("Token não encontrado");
       }
       throw new AppError(error.response?.data.message || error.message);

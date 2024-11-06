@@ -15,6 +15,8 @@ import { VisitsService } from "../modules/visits/services";
 
 import { IRegisterVisitService } from "../modules/register/models";
 import { RegisterVisitService } from "../modules/register/services";
+import { IUsersService } from "../modules/users/models";
+import { UsersService } from "../modules/users/services";
 
 const appIocContainer = new Container({ defaultScope: "Singleton" });
 
@@ -35,5 +37,7 @@ appIocContainer
 appIocContainer
   .bind<IRegisterVisitService>(Types.Register.IRegisterVisitService)
   .to(RegisterVisitService);
+
+appIocContainer.bind<IUsersService>(Types.Users.IUsersService).to(UsersService);
 
 export { appIocContainer };

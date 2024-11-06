@@ -50,6 +50,7 @@ const Home: React.FC = () => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [filterStatus, setFilterStatus] = useState("");
+  const [isLargeScreen, setIsLargeScreen] = useState<boolean>(false);
 
   const { snackbar } = useDialogAlert();
   const { serviceContainer } = useIoCContext();
@@ -63,6 +64,10 @@ const Home: React.FC = () => {
     Types.Visits.IVisitsService
   );
   const isDataEmpty = ArrayIsEmpty(clientsData);
+
+  window.addEventListener("resize", () => {
+    window.innerWidth >= 768 ? setIsLargeScreen(true) : setIsLargeScreen(false);
+  });
 
   const optionsFilterStatus = [
     { value: "agendado", label: "Agendado" },
@@ -233,62 +238,65 @@ const Home: React.FC = () => {
             />
           </Stack>
 
-          <Stack
-            direction="row"
-            alignItems="end"
-            flexWrap="wrap-reverse"
-            gap={2}
-          >
-            <Box>
-              <CustomButton
-                title="Limpar filtros"
-                variant={CustomButtonVariant.OUTLINED}
-                onClick={() => cleanFilters()}
-              />
-              <Typography
-                sx={{
-                  color: theme.palette.grey[600],
-                  fontFamily: "Poppins",
-                  fontWeight: "600",
-                  fontSize: ".9rem",
-                }}
-              >
-                Período
-              </Typography>
-              <RangePicker
-                size="large"
-                format="DD/MM/YYYY"
-                //@ts-ignore
-                value={
-                  startDate && endDate
-                    ? [
-                        moment(startDate, "YYYY-MM-DD"),
-                        moment(endDate, "YYYY-MM-DD"),
-                      ]
-                    : null
-                }
-                onChange={(value) => {
-                  const [startDate, endDate] = value!;
-                  setStartDate(startDate!.format("YYYY-MM-DD"));
-                  setEndDate(endDate!.format("YYYY-MM-DD"));
-                }}
-                style={{
-                  borderColor: theme.palette.grey[400],
-                  fontFamily: "Poppins",
-                  borderRadius: "4px",
-                }}
-                placeholder={["Data de início", "Data de término"]}
-              />
-            </Box>
+          <Stack>
+            <Stack flexWrap="wrap" direction="row" gap={2}>
+              <Box>
+                <Typography
+                  sx={{
+                    color: theme.palette.grey[600],
+                    fontFamily: "Poppins",
+                    fontWeight: "600",
+                    fontSize: ".9rem",
+                  }}
+                >
+                  Período
+                </Typography>
+                <RangePicker
+                  size="large"
+                  format="DD/MM/YYYY"
+                  //@ts-ignore
+                  value={
+                    startDate && endDate
+                      ? [
+                          moment(startDate, "YYYY-MM-DD"),
+                          moment(endDate, "YYYY-MM-DD"),
+                        ]
+                      : null
+                  }
+                  onChange={(value) => {
+                    const [startDate, endDate] = value!;
+                    setStartDate(startDate!.format("YYYY-MM-DD"));
+                    setEndDate(endDate!.format("YYYY-MM-DD"));
+                  }}
+                  style={{
+                    borderColor: theme.palette.grey[400],
+                    fontFamily: "Poppins",
+                    borderRadius: "4px",
+                  }}
+                  placeholder={["Data de início", "Data de término"]}
+                />
+              </Box>
 
-            <SelectCustom
-              label="Status"
-              style={{ minWidth: "15rem" }}
-              value={filterStatus}
-              onChange={({ target }) => {
-                setFilterStatus(target.value);
+              <SelectCustom
+                label="Status"
+                style={{ minWidth: isLargeScreen ? "15rem" : "22rem" }}
+                value={filterStatus}
+                onChange={({ target }) => {
+                  setFilterStatus(target.value);
+                }}
+                options={optionsFilterStatus}
+              />
+            </Stack>
+
+            <CustomButton
+              title="Limpar filtros"
+              variant={CustomButtonVariant.OUTLINED}
+              onClick={() => cleanFilters()}
+              //@ts-ignore
+              sx={{
+                marginTop: "1rem",
+                alignSelf: isLargeScreen && "flex-end",
               }}
-              options={optionsFilterStatus}
             />
           </Stack>
         </Stack>

@@ -5,11 +5,16 @@ import CustomButton from "../../components/CustomButton";
 import useDialogAlert from "../../hooks/useDialogAlert";
 import { AppError } from "../../utils/AppError";
 import { CustomButtonVariant } from "../../components/CustomButton/CustomButtonVariant";
+import { useIoCContext } from "../../contexts/IoCContext";
+import { Types } from "../../ioc/types";
+import { IUsersService } from "../../modules/users/models";
+import { UserType } from ".";
+import { capitalize } from "../../utils/format";
 
 interface IModalChangePassProps {
   open: boolean;
   onClose: () => void;
-  user: string;
+  user: UserType;
 }
 
 const useSyles = () => ({
@@ -32,11 +37,19 @@ const ModalChangePass: React.FC<IModalChangePassProps> = ({
   const [newPassword, setNewPassword] = useState("");
   const [loadingChangePass, setLoadingChangePass] = useState<boolean>(false);
 
+  const { serviceContainer } = useIoCContext();
+
   const { snackbar } = useDialogAlert();
+
+  const usersService = serviceContainer.get<IUsersService>(
+    Types.Users.IUsersService
+  );
 
   const handleChangePass = async () => {
     try {
       setLoadingChangePass(true);
+
+      await usersService.changePassword(props.user.usuario_id, newPassword);
 
       snackbar({ message: "Senha alterada com sucesso", variant: "success" });
 
@@ -55,7 +68,7 @@ const ModalChangePass: React.FC<IModalChangePassProps> = ({
     <Modal open={open} onClose={onClose} sx={styles.modal}>
       <Card sx={styles.card}>
         <TitleAndSubtitle
-          title={`Alterar senha de ${props.user}`}
+          title={`Alterar senha de ${capitalize(props.user.nome)}`}
           subtitle="É obrigatório preencher o campo abaixo para concluir a troca."
         />
 
