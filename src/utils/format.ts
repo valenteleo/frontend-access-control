@@ -1,5 +1,10 @@
 export const capitalize = (str: string): string => {
-  return str.charAt(0).toUpperCase() + str.slice(1);
+  const format = str.split(" ");
+  const upper = format
+    .map((items) => items.charAt(0).toUpperCase() + items.slice(1))
+    .join(" ");
+
+  return upper;
 };
 
 export const formattedDate = (date: string): string => {

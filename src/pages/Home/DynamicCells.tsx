@@ -2,15 +2,16 @@ import { Fragment } from "react";
 import { TableCell, Typography, useTheme } from "@mui/material";
 import { ScheduledVisits } from "../../modules/visits/models";
 import { translateStatus } from "./translate";
+import { capitalize } from "../../utils/format";
 
 const DynamicCells: React.FC<{ items: ScheduledVisits }> = ({ items }) => {
   const theme = useTheme();
 
   const data = [
-    items.nome,
+    capitalize(items.nome),
     items.cpf,
     items.datavis,
-    items.usercad ?? "Usuário",
+    capitalize(items.usercad ?? "Usuário"),
     translateStatus(items.status),
   ];
 

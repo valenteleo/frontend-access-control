@@ -18,6 +18,7 @@ import {
   Card,
   TableContainer,
   CircularProgress,
+  Theme,
 } from "@mui/material";
 import { homeHeaderColumns } from "./HomeHeaderColumns";
 import { HomeOutlined, MoreVertOutlined } from "@mui/icons-material";
@@ -43,6 +44,27 @@ interface StyledMenuProps {
   data: ScheduledVisits;
 }
 
+const useStyles = (theme: Theme) => ({
+  select: {
+    width: "15rem",
+    "@media screen and (max-width: 768px)": {
+      width: "24rem !important",
+    },
+  },
+  filter: {
+    marginTop: "1rem",
+    alignSelf: "flex-end",
+    "@media screen and (max-width: 768px)": {
+      width: "100%",
+    },
+  },
+  range: {
+    borderColor: theme.palette.grey[400],
+    fontFamily: "Poppins",
+    borderRadius: "4px",
+  },
+});
+
 const Home: React.FC = () => {
   const [loadingVisits, setLoadingVisits] = useState(false);
   const [loadingDownload, setLoadingDownload] = useState(false);
@@ -50,7 +72,6 @@ const Home: React.FC = () => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [filterStatus, setFilterStatus] = useState("");
-  const [isLargeScreen, setIsLargeScreen] = useState<boolean>(false);
 
   const { snackbar } = useDialogAlert();
   const { serviceContainer } = useIoCContext();
@@ -59,15 +80,12 @@ const Home: React.FC = () => {
 
   const navigate = useNavigate();
   const theme = useTheme();
+  const styles = useStyles(theme);
 
   const visitsService = serviceContainer.get<IVisitsService>(
     Types.Visits.IVisitsService
   );
   const isDataEmpty = ArrayIsEmpty(clientsData);
-
-  window.addEventListener("resize", () => {
-    window.innerWidth >= 768 ? setIsLargeScreen(true) : setIsLargeScreen(false);
-  });
 
   const optionsFilterStatus = [
     { value: "agendado", label: "Agendado" },
@@ -268,18 +286,14 @@ const Home: React.FC = () => {
                     setStartDate(startDate!.format("YYYY-MM-DD"));
                     setEndDate(endDate!.format("YYYY-MM-DD"));
                   }}
-                  style={{
-                    borderColor: theme.palette.grey[400],
-                    fontFamily: "Poppins",
-                    borderRadius: "4px",
-                  }}
+                  style={styles.range}
                   placeholder={["Data de início", "Data de término"]}
                 />
               </Box>
 
               <SelectCustom
                 label="Status"
-                style={{ minWidth: isLargeScreen ? "15rem" : "22rem" }}
+                style={styles.select}
                 value={filterStatus}
                 onChange={({ target }) => {
                   setFilterStatus(target.value);
@@ -292,11 +306,7 @@ const Home: React.FC = () => {
               title="Limpar filtros"
               variant={CustomButtonVariant.OUTLINED}
               onClick={() => cleanFilters()}
-              //@ts-ignore
-              sx={{
-                marginTop: "1rem",
-                alignSelf: isLargeScreen && "flex-end",
-              }}
+              sx={styles.filter}
             />
           </Stack>
         </Stack>
