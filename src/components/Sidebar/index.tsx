@@ -103,7 +103,8 @@ const Sidebar: React.FC = () => {
 
     if (!userIsAdmin) {
       const filtered = menuList.filter(
-        (items) => items.title !== "Cadastrar usuário"
+        (items) =>
+          items.title !== "Cadastrar usuário" && items.title !== "Usuários"
       );
 
       setMenu(filtered);
@@ -135,6 +136,10 @@ const Sidebar: React.FC = () => {
                 width: "100%",
                 fontFamily: "Poppins",
                 color: selectedPath(items.redirectTo),
+                borderRadius: "4px",
+                backgroundColor: location.pathname.includes(items.redirectTo)
+                  ? "rgba(238, 31, 31, .2)"
+                  : "transparent",
               }}
               onClick={() => navigate(items.redirectTo)}
             >

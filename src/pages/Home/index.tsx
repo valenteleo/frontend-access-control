@@ -46,10 +46,7 @@ interface StyledMenuProps {
 
 const useStyles = (theme: Theme) => ({
   select: {
-    width: "15rem",
-    "@media screen and (max-width: 768px)": {
-      width: "24rem !important",
-    },
+    minWidth: "15rem",
   },
   filter: {
     marginTop: "1rem",
