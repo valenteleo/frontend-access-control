@@ -12,6 +12,8 @@ import useDialogAlert from "../../hooks/useDialogAlert";
 import { useIoCContext } from "../../contexts/IoCContext";
 import { IRegisterVisitService } from "../../modules/register/models";
 import { Types } from "../../ioc/types";
+import { ROUTES } from "../../appConfig/routes";
+import { useNavigate } from "react-router-dom";
 
 const useStyles = (theme: Theme) => {
   return {
@@ -32,6 +34,7 @@ const Register: React.FC = () => {
 
   const theme = useTheme();
   const styles = useStyles(theme);
+  const navigate = useNavigate();
 
   const registerService = serviceContainer.get<IRegisterVisitService>(
     Types.Register.IRegisterVisitService
@@ -68,6 +71,8 @@ const Register: React.FC = () => {
         variant: "success",
         anchorOrigin: { horizontal: "right", vertical: "top" },
       });
+
+      navigate(ROUTES.USERS);
     } catch (error) {
       if (error instanceof AppError) {
         snackbar({ message: `Error: ${error.message}`, variant: "error" });
