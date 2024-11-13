@@ -1,6 +1,6 @@
 import { injectable } from "inversify";
 import { IHttpService } from "../models/IHttpService";
-import Axios, { AxiosInstance, AxiosError } from "axios";
+import Axios, { AxiosInstance, AxiosError, ResponseType } from "axios";
 import appConfig from "../../../appConfig";
 import { AppError } from "../../../utils/AppError";
 
@@ -20,7 +20,8 @@ export class AxiosHttpService implements IHttpService {
     method: string,
     path: string,
     body?: any,
-    params?: {}
+    params?: {},
+    responseType?: ResponseType
   ) {
     try {
       const { data } = await this.httpInstance.request({
@@ -28,6 +29,7 @@ export class AxiosHttpService implements IHttpService {
         url: path,
         data: body,
         params: params,
+        responseType: responseType,
       });
       return data;
     } catch (err: any) {
@@ -53,8 +55,13 @@ export class AxiosHttpService implements IHttpService {
       });
   }
 
-  public async post<T>(path: string, body?: any, params?: {}): Promise<T> {
-    return await this.makeRequest("POST", path, body, params);
+  public async post<T>(
+    path: string,
+    body?: any,
+    params?: {},
+    responseType?: ResponseType
+  ): Promise<T> {
+    return await this.makeRequest("POST", path, body, params, responseType);
   }
 
   public async put<T>(path: string, body?: any, params?: {}): Promise<T> {

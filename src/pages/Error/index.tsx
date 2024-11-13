@@ -18,12 +18,12 @@ const Error: React.FC = () => {
     >
       <Typography>Página não encontrada</Typography>
 
-      <Stack direction="row" alignItems="center">
-        <IconButton onClick={() => navigate(ROUTES.HOME)}>
+      <IconButton onClick={() => navigate(ROUTES.HOME)}>
+        <Stack direction="row" alignItems="center" gap={1}>
           <KeyboardArrowLeftOutlined />
-        </IconButton>
-        <Typography>Voltar para o APP</Typography>
-      </Stack>
+          <Typography>Voltar para o APP</Typography>
+        </Stack>
+      </IconButton>
     </Box>
   );
 };

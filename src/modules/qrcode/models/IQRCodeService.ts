@@ -8,4 +8,5 @@ export interface IQRCode {
 
 export interface IQRCodeService {
   getListQRCode(codusuario?: string | number): Promise<IClientsQRCode>;
+  downloadQRCode(userID: string): Promise<Blob>;
 }

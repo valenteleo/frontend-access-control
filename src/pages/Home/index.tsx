@@ -24,7 +24,6 @@ import { homeHeaderColumns } from "./HomeHeaderColumns";
 import { HomeOutlined, MoreVertOutlined } from "@mui/icons-material";
 import TitleAndSubtitle from "../../components/TitleAndSubtitle";
 import DynamicCells from "./DynamicCells";
-import SelectCustom from "../../components/SelectCustom";
 import WithoutVisit from "./WithoutVisits";
 import { ArrayIsEmpty } from "../../utils";
 import { useAuth } from "../../contexts/AuthContext";
@@ -40,21 +39,19 @@ import { CustomButtonVariant } from "../../components/CustomButton/CustomButtonV
 import CustomButton from "../../components/CustomButton";
 import { downloadXLSX } from "../../utils/download";
 import moment from "moment";
+import DrawerFilter from "./DrawerFilters";
+import { useVisits, VisitsProvider } from "../../contexts/VisitsContext";
+import { IUsersService } from "../../modules/users/models";
 interface StyledMenuProps {
   data: ScheduledVisits;
 }
 
+export interface IFilters {
+  status: string;
+  user: string;
+}
+
 const useStyles = (theme: Theme) => ({
-  select: {
-    minWidth: "15rem",
-  },
-  filter: {
-    marginTop: "1rem",
-    alignSelf: "flex-end",
-    "@media screen and (max-width: 768px)": {
-      width: "100%",
-    },
-  },
   range: {
     borderColor: theme.palette.grey[400],
     fontFamily: "Poppins",
@@ -62,18 +59,24 @@ const useStyles = (theme: Theme) => ({
   },
 });
 
-const Home: React.FC = () => {
+const Container: React.FC = () => {
   const [loadingVisits, setLoadingVisits] = useState(false);
   const [loadingDownload, setLoadingDownload] = useState(false);
+
   const [clientsData, setClientsData] = useState<ScheduledVisits[]>([]);
+
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [filterStatus, setFilterStatus] = useState("");
+  const [filterStatus, setFilterStatus] = useState<IFilters>({
+    status: "",
+    user: "",
+  });
 
   const { snackbar } = useDialogAlert();
   const { serviceContainer } = useIoCContext();
   const { userData } = useAuth();
   const { RangePicker } = DatePicker;
+  const { setUsersOptions } = useVisits();
 
   const navigate = useNavigate();
   const theme = useTheme();
@@ -82,31 +85,40 @@ const Home: React.FC = () => {
   const visitsService = serviceContainer.get<IVisitsService>(
     Types.Visits.IVisitsService
   );
-  const isDataEmpty = ArrayIsEmpty(clientsData);
 
-  const optionsFilterStatus = [
-    { value: "agendado", label: "Agendado" },
-    { value: "atendido", label: "Atendido" },
-    { value: "omisso", label: "Omisso" },
-    { value: "cancelado", label: "Cancelado" },
-  ];
+  const usersService = serviceContainer.get<IUsersService>(
+    Types.Users.IUsersService
+  );
+
+  const isDataEmpty = ArrayIsEmpty(clientsData);
 
   const cleanFilters = () => {
     setStartDate("");
     setEndDate("");
-    setFilterStatus("");
+    setFilterStatus((prevState) => ({
+      ...prevState,
+      status: "",
+      user: "",
+    }));
   };
 
   const fetchScheduledVisits = async () => {
     try {
       setLoadingVisits(true);
 
-      const response = await visitsService.getScheduledVisits(
-        userData.usuario_id,
-        startDate,
-        endDate,
-        filterStatus
-      );
+      const data = {
+        id: filterStatus.user
+          ? filterStatus.user
+          : userData.perfil === 0
+          ? ""
+          : userData.usuario_id,
+        minData: startDate,
+        maxData: endDate,
+        status: filterStatus.status,
+        user: filterStatus.user,
+      };
+
+      const response = await visitsService.getScheduledVisits(data);
 
       setClientsData(response.clientes);
     } catch (error) {
@@ -144,12 +156,15 @@ const Home: React.FC = () => {
     try {
       setLoadingDownload(true);
 
-      const response = await visitsService.downloadReport(
-        userData.usuario_id,
-        startDate,
-        endDate,
-        filterStatus
-      );
+      const data = {
+        id: userData.usuario_id,
+        minData: startDate,
+        maxData: endDate,
+        status: filterStatus.status,
+        user: filterStatus.user,
+      };
+
+      const response = await visitsService.downloadReport(data);
 
       const today = moment()
         .format()
@@ -214,7 +229,11 @@ const Home: React.FC = () => {
 
         <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
           {menuItems.map((items, index) => (
-            <MenuItem key={index} onClick={() => handleActionMenu(items.type)}>
+            <MenuItem
+              key={index}
+              sx={{ color: theme.palette.grey[800] }}
+              onClick={() => handleActionMenu(items.type)}
+            >
               {items.label}
             </MenuItem>
           ))}
@@ -225,7 +244,29 @@ const Home: React.FC = () => {
 
   useEffect(() => {
     fetchScheduledVisits();
-  }, [endDate, filterStatus]);
+  }, [startDate, endDate, filterStatus]);
+
+  useEffect(() => {
+    const fetchAllUsers = async () => {
+      try {
+        const response = await usersService.getAllUsers();
+
+        const formattedData = response.Users.map((item) => ({
+          value: item.usuario_id,
+          label: item.nome,
+        }));
+
+        setUsersOptions(formattedData);
+      } catch (error) {
+        snackbar({
+          message: `Error: ${error}`,
+          variant: "error",
+        });
+      }
+    };
+
+    fetchAllUsers();
+  }, []);
 
   return (
     <Layout>
@@ -235,7 +276,12 @@ const Home: React.FC = () => {
       />
 
       <Card sx={{ boxShadow: "none", padding: "1.5rem", borderRadius: "8px" }}>
-        <Stack direction="row" justifyContent="space-between" flexWrap={"wrap"}>
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+          flexWrap={"wrap"}
+          gap={2}
+        >
           <Stack gap={1}>
             <TitleAndSubtitle
               title={`Olá, ${capitalize(userData?.nome)}!`}
@@ -287,24 +333,20 @@ const Home: React.FC = () => {
                   placeholder={["Data de início", "Data de término"]}
                 />
               </Box>
-
-              <SelectCustom
-                label="Status"
-                style={styles.select}
-                value={filterStatus}
-                onChange={({ target }) => {
-                  setFilterStatus(target.value);
-                }}
-                options={optionsFilterStatus}
-              />
             </Stack>
 
-            <CustomButton
-              title="Limpar filtros"
-              variant={CustomButtonVariant.OUTLINED}
-              onClick={() => cleanFilters()}
-              sx={styles.filter}
-            />
+            <Stack direction="row" justifyContent="flex-end" gap={1} mt={2}>
+              <CustomButton
+                title="Limpar filtros"
+                variant={CustomButtonVariant.OUTLINED}
+                onClick={() => cleanFilters()}
+              />
+
+              <DrawerFilter
+                filterStatus={filterStatus}
+                setFilterStatus={setFilterStatus}
+              />
+            </Stack>
           </Stack>
         </Stack>
 
@@ -366,6 +408,14 @@ const Home: React.FC = () => {
         )}
       </Card>
     </Layout>
+  );
+};
+
+const Home: React.FC = () => {
+  return (
+    <VisitsProvider>
+      <Container />
+    </VisitsProvider>
   );
 };
 

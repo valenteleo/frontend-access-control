@@ -11,7 +11,6 @@ const DynamicCells: React.FC<{ items: ScheduledVisits }> = ({ items }) => {
     capitalize(items.nome),
     items.cpf,
     items.datavis,
-    capitalize(items.usercad ?? "Usuário"),
     translateStatus(items.status),
   ];
 
@@ -45,11 +44,11 @@ const DynamicCells: React.FC<{ items: ScheduledVisits }> = ({ items }) => {
           <Typography
             sx={{
               color:
-                index === 4 ? tagStylesStatus(item) : theme.palette.grey[700],
+                index === 3 ? tagStylesStatus(item) : theme.palette.grey[700],
               textAlign: "left",
               padding: 1,
               borderRadius: "8px",
-              fontWeight: index === 4 ? 600 : "none",
+              fontWeight: index === 3 ? 600 : "none",
               fontFamily: "Poppins",
             }}
           >

@@ -29,3 +29,14 @@ export const downloadXLSX = (data: any, key: string) => {
   a.download = `${key}.xlsx`;
   a.click();
 };
+
+export const downloadQRCodePNG = (data: any, key: string) => {
+  const fileBlob = new Blob([data], {
+    type: "image/png",
+  });
+  const fileURL = URL.createObjectURL(fileBlob);
+  const a = document.createElement("a");
+  a.href = fileURL;
+  a.download = `${key}.png`;
+  a.click();
+};

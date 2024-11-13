@@ -12,8 +12,13 @@ import {
 } from "@mui/material";
 import QRCode from "react-qr-code";
 import CustomButton from "../../components/CustomButton";
-import { downloadSVG } from "../../utils/download";
 import { CustomButtonVariant } from "../../components/CustomButton/CustomButtonVariant";
+import { useIoCContext } from "../../contexts/IoCContext";
+import { IQRCodeService } from "../../modules/qrcode/models/IQRCodeService";
+import { Types } from "../../ioc/types";
+import { downloadQRCodePNG } from "../../utils/download";
+import useDialogAlert from "../../hooks/useDialogAlert";
+import { AppError } from "../../utils/AppError";
 
 const useStyles = (theme: Theme) => ({
   container: {
@@ -64,6 +69,26 @@ const ModalQRCode: React.FC<ModalQRCodeProps> = ({
   const theme = useTheme();
   const styles = useStyles(theme);
 
+  const { snackbar } = useDialogAlert();
+
+  const { serviceContainer } = useIoCContext();
+
+  const qrcodeService = serviceContainer.get<IQRCodeService>(
+    Types.QRCode.IQRCodeService
+  );
+
+  const downloadQRCode = async () => {
+    try {
+      const response = await qrcodeService.downloadQRCode(value);
+
+      downloadQRCodePNG(response, value);
+    } catch (error) {
+      if (error instanceof AppError) {
+        snackbar({ message: `Error: ${error.message}`, variant: "error" });
+      }
+    }
+  };
+
   const qrRef = useRef<HTMLDivElement | null>(null);
 
   return (
@@ -87,7 +112,7 @@ const ModalQRCode: React.FC<ModalQRCodeProps> = ({
           <CustomButton
             title="Baixar QR Code"
             variant={CustomButtonVariant.CONTAINED_DOWNLOAD}
-            onClick={() => downloadSVG(qrRef, value)}
+            onClick={() => downloadQRCode()}
           />
         </Card>
       </Stack>

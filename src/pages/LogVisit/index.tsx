@@ -146,7 +146,6 @@ const LogVisit: React.FC = () => {
           boxShadow: "none",
           padding: "1rem",
           justifyContent: "space-between",
-          border: `2px dashed ${theme.palette.grey[300]}`,
         }}
       >
         <TitleAndSubtitle

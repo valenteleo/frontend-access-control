@@ -11,9 +11,20 @@ export class QRCodeService implements IQRCodeService {
   public async getListQRCode(
     codusuario?: string | number
   ): Promise<IClientsQRCode> {
-    const response = this.httpInstance.get<IClientsQRCode>(
+    const response = await this.httpInstance.get<IClientsQRCode>(
       `/status?codusuario=${codusuario}`
     );
+    return response;
+  }
+
+  public async downloadQRCode(userID: string): Promise<Blob> {
+    const response = await this.httpInstance.post<Blob>(
+      `/qr-code/${userID}`,
+      {},
+      {},
+      "blob"
+    );
+
     return response;
   }
 }

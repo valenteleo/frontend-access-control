@@ -1,5 +1,10 @@
 import { inject, injectable } from "inversify";
-import { IClientsVisit, IVisitsService, ScheduledVisits } from "../models";
+import {
+  GenericsVisit,
+  IClientsVisit,
+  IVisitsService,
+  ScheduledVisits,
+} from "../models";
 import { Types } from "../../../ioc/types";
 import type { IHttpService } from "../../http/models/IHttpService";
 
@@ -7,14 +12,9 @@ import type { IHttpService } from "../../http/models/IHttpService";
 export class VisitsService implements IVisitsService {
   @inject(Types.IHttpService) private httpInstance!: IHttpService;
 
-  public async getScheduledVisits(
-    id: number,
-    minData: string,
-    maxData: string,
-    status: string
-  ): Promise<IClientsVisit> {
+  public async getScheduledVisits(data: GenericsVisit): Promise<IClientsVisit> {
     const response = await this.httpInstance.get(
-      `/clientes?codusuario=${id}&datamin=${minData}&datamax=${maxData}&status=${status}`
+      `/clientes?codusuario=${data.id}&datamin=${data.minData}&datamax=${data.maxData}&status=${data.status}`
     );
 
     return response;
@@ -50,14 +50,9 @@ export class VisitsService implements IVisitsService {
     return response;
   }
 
-  public async downloadReport(
-    id: number,
-    minData: string,
-    maxData: string,
-    status: string
-  ): Promise<Blob> {
+  public async downloadReport(data: GenericsVisit): Promise<Blob> {
     const response = await this.httpInstance.get<Blob>(
-      `/clientes/download?codusuario=${id}&datamin=${minData}&datamax=${maxData}&status=${status}`,
+      `/clientes/download?codusuario=${data.id}&datamin=${data.minData}&datamax=${data.maxData}&status=${data.status}`,
       {
         responseType: "blob",
       }

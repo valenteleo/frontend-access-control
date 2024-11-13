@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Card, Stack, Theme, useTheme } from "@mui/material";
+import { Card, Stack, useTheme } from "@mui/material";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { FormQRCode } from "./FormQRCode";
@@ -9,13 +9,12 @@ import TitleAndSubtitle from "../../components/TitleAndSubtitle";
 import TitleBarPage from "../../components/TitleBarPage";
 import ModalQRCode from "./ModalQRCode";
 
-const useStyles = (theme: Theme) => {
+const useStyles = () => {
   return {
     card: {
       borderRadius: "4px",
       boxShadow: "none",
       padding: "1rem",
-      border: `2px dashed ${theme.palette.grey[300]}`,
     },
     contentCard: {
       marginBottom: "1.5rem",
@@ -30,7 +29,7 @@ const GenerateQRCode: React.FC = () => {
   const [qrCodeValue, setQRCodeValue] = useState("");
 
   const theme = useTheme();
-  const styles = useStyles(theme);
+  const styles = useStyles();
 
   const initialValues = {
     name: "",

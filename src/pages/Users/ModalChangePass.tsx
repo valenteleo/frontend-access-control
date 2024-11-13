@@ -1,4 +1,4 @@
-import { Card, Divider, Modal, TextField } from "@mui/material";
+import { Card, Divider, Modal, Stack, TextField } from "@mui/material";
 import TitleAndSubtitle from "../../components/TitleAndSubtitle";
 import { useState } from "react";
 import CustomButton from "../../components/CustomButton";
@@ -82,18 +82,25 @@ const ModalChangePass: React.FC<IModalChangePassProps> = ({
 
         <Divider sx={{ mx: "-2rem" }} />
 
-        <CustomButton
-          title="Salvar"
-          sx={{ alignSelf: "flex-end" }}
-          onClick={handleChangePass}
-          variant={
-            !newPassword
-              ? CustomButtonVariant.DISABLED
-              : loadingChangePass
-              ? CustomButtonVariant.CONTAINED_LOADING
-              : CustomButtonVariant.CONTAINED
-          }
-        />
+        <Stack direction="row" alignSelf="flex-end" gap={1}>
+          <CustomButton
+            title="Cancelar"
+            variant={CustomButtonVariant.OUTLINED}
+            onClick={onClose}
+          />
+
+          <CustomButton
+            title="Salvar"
+            onClick={handleChangePass}
+            variant={
+              !newPassword
+                ? CustomButtonVariant.DISABLED
+                : loadingChangePass
+                ? CustomButtonVariant.CONTAINED_LOADING
+                : CustomButtonVariant.CONTAINED
+            }
+          />
+        </Stack>
       </Card>
     </Modal>
   );

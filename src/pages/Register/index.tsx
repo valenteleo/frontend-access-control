@@ -3,7 +3,7 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import FormRegister from "./FormRegister";
 import Layout from "../../components/Layout";
-import { Card, Theme, useTheme } from "@mui/material";
+import { Card, useTheme } from "@mui/material";
 import TitleBarPage from "../../components/TitleBarPage";
 import { PersonAddAltOutlined } from "@mui/icons-material";
 import TitleAndSubtitle from "../../components/TitleAndSubtitle";
@@ -15,13 +15,12 @@ import { Types } from "../../ioc/types";
 import { ROUTES } from "../../appConfig/routes";
 import { useNavigate } from "react-router-dom";
 
-const useStyles = (theme: Theme) => {
+const useStyles = () => {
   return {
     card: {
       borderRadius: "4px",
       boxShadow: "none",
       padding: "1rem",
-      border: `2px dashed ${theme.palette.grey[300]}`,
     },
   };
 };
@@ -33,7 +32,7 @@ const Register: React.FC = () => {
   const { snackbar } = useDialogAlert();
 
   const theme = useTheme();
-  const styles = useStyles(theme);
+  const styles = useStyles();
   const navigate = useNavigate();
 
   const registerService = serviceContainer.get<IRegisterVisitService>(

@@ -1,4 +1,4 @@
-import { Card, Divider, Modal, useTheme } from "@mui/material";
+import { Card, Divider, Modal, Stack, useTheme } from "@mui/material";
 import TitleAndSubtitle from "../../components/TitleAndSubtitle";
 import CustomButton from "../../components/CustomButton";
 import { ReportProblemOutlined } from "@mui/icons-material";
@@ -89,16 +89,23 @@ const ModalConfirm: React.FC<IModalConfirmProps> = ({
 
         <Divider sx={{ mx: "-2rem" }} />
 
-        <CustomButton
-          title="Confirmar"
-          sx={{ alignSelf: "flex-end" }}
-          onClick={deleteUser}
-          variant={
-            loadingDelete
-              ? CustomButtonVariant.CONTAINED_LOADING
-              : CustomButtonVariant.CONTAINED
-          }
-        />
+        <Stack direction="row" alignSelf="flex-end" gap={1}>
+          <CustomButton
+            title="Cancelar"
+            variant={CustomButtonVariant.OUTLINED}
+            onClick={handleClose}
+          />
+
+          <CustomButton
+            title="Confirmar"
+            onClick={deleteUser}
+            variant={
+              loadingDelete
+                ? CustomButtonVariant.CONTAINED_LOADING
+                : CustomButtonVariant.CONTAINED
+            }
+          />
+        </Stack>
       </Card>
     </Modal>
   );

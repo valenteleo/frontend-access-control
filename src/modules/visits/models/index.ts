@@ -15,20 +15,18 @@ export interface ScheduledVisits {
   usercad: string;
 }
 
+export interface GenericsVisit {
+  id: string | number;
+  minData: string;
+  maxData: string;
+  status: string;
+  user: string;
+}
+
 export interface IVisitsService {
-  getScheduledVisits(
-    id: number,
-    minData: string,
-    maxData: string,
-    status: string
-  ): Promise<IClientsVisit>;
+  getScheduledVisits(data: GenericsVisit): Promise<IClientsVisit>;
   getScheduledById(id: number): Promise<ScheduledVisits>;
   cancelVisit(id: number): Promise<IClientsVisit>;
   updateDateVisit(id: number, date: string): Promise<IClientsVisit>;
-  downloadReport(
-    id: number,
-    minData: string,
-    maxData: string,
-    status: string
-  ): Promise<Blob>;
+  downloadReport(data: GenericsVisit): Promise<Blob>;
 }
